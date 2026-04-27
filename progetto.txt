@@ -1,0 +1,57 @@
+DESCRIZIONE IN LINGUAGGIO NATURALE
+
+Il progetto proposto consiste nella realizzazione di un sistema software per la gestione di una Smart Home, ovvero un’abitazione dotata di dispositivi intelligenti connessi tra loro.
+Il sistema ha lo scopo di fornire un pannello di controllo centralizzato attraverso il quale l’utente possa monitorare e gestire tutti i dispositivi presenti nelle diverse stanze della casa. 
+Tra i dispositivi gestiti rientrano luci, termostati, serrature elettroniche e altri dispositivi connessi, ciascuno caratterizzato da un identificativo, 
+uno stato (attivo/disattivo), eventuali parametri specifici (ad esempio temperatura per i termostati) e la stanza di appartenenza.
+L’utente deve poter accendere o spegnere i dispositivi, modificarne i parametri e visualizzarne lo stato in tempo reale. 
+I dispositivi sono distribuiti nelle varie stanze dell’abitazione, che devono essere anch’esse gestite dal sistema e identificate tramite un nome o un codice.
+Il sistema consente inoltre la creazione di automazioni, ovvero regole che permettono di eseguire automaticamente determinate azioni al verificarsi di specifiche condizioni. 
+Tali condizioni possono essere basate sull’orario (ad esempio accensione delle luci a una certa ora) oppure su parametri ambientali (come temperatura o stato di altri dispositivi). 
+Ogni automazione è caratterizzata da un identificativo, una condizione di attivazione e una o più azioni da eseguire.
+È inoltre previsto un sistema di registrazione degli eventi (log), che memorizza tutte le operazioni effettuate all’interno della casa, come l’accensione di un dispositivo, 
+la modifica di un parametro o l’attivazione di un’automazione. Ogni evento è caratterizzato da data, ora, tipo di evento e descrizione.
+Il sistema deve permettere all’utente di consultare lo storico degli eventi per monitorare l’attività della casa nel tempo.
+L’accesso al sistema avviene tramite autenticazione dell’utente, il quale può interagire con il pannello di controllo per gestire tutte le funzionalità disponibili.
+
+
+=======================================================================================================================
+
+
+REQUISITI FUNZIONALI
+
+Gestione Dispositivi
+	RF1 – Gestione Dispositivi
+	RF2 – CRUD Dispositivi
+	RF3 – Visualizza Dispositivi
+	
+Gestione Stanze
+	RF4 – Gestione Stanze
+	RF5 – CRUD Stanze
+	RF6 – Visualizza Stanze
+	
+Gestione Automazioni
+	RF7 – Gestione Automazioni
+	RF8 – Inserisci Automazione
+	RF9 – Modifica Automazione
+	RF10 – Elimina Automazione
+	RF11 – Visualizza Automazioni
+	
+Gestione Eventi (Log)
+	RF12 – Registrazione Evento
+	RF13 – Visualizza Eventi
+	Controllo Sistema
+	RF14 – Controllo Dispositivo
+	RF15 – Monitoraggio Stato Dispositivi
+	
+REQUISITI NON FUNZIONALI
+
+	RNF1 – Implementazione in linguaggio Python
+	RNF2 – Sistema di autenticazione utente
+	RNF3 – Tempo di risposta inferiore a 3 secondi
+	RNF4 – Interfaccia semplice e intuitiva
+
+
+=======================================================================================================================
+
+

@@ -1,0 +1,132 @@
+@startuml
+title Package di Analisi - Smart Home (Versione Ottimizzata)
+
+' =========================
+' PACKAGE DISPOSITIVI
+' =========================
+package "Gestione Dispositivi" {
+
+  class Dispositivo {
+    - id: UUID
+    - nome_dispositivo: string
+    - stato: bool
+    - valore: float
+    - unitaMisura: string
+    - consumoEnergetico: float
+
+    + accendi()
+    + spegni()
+    + setValore(valore: float)
+    + getStato(): boolean
+    + getInfo(): string
+  }
+
+  class Stanza {
+    - id: UUID
+    - nome_stanza: string
+
+    + aggiungiDispositivo(d: Dispositivo): bool
+    + rimuoviDispositivo(d: Dispositivo): bool
+    + getDispositivi(): List[Dispositivo]
+  }
+
+  Stanza "1" --> "*" Dispositivo : contiene
+}
+
+' =========================
+' PACKAGE AUTOMAZIONI
+' =========================
+package "Gestione Automazioni" {
+
+  class Automazione {
+    - id: UUID
+    - nome_automazione: string
+    - attiva: bool
+    - orario: DateTime
+    - condizione: string
+    - azione: string
+
+    
+    ' chiedere se sarebbe piu' corretto passare alle funzioni Automazione l'id dell'automazione
+    ' per poterlo effettivamente attivarle e disattirvale in un contesto reale
+    + attivaAutomazione()
+    + disattivaAutomazione()
+    + verificaCondizione(): boolean
+  }
+
+}
+
+' =========================
+' PACKAGE EVENTI
+' =========================
+package "Gestione Eventi" {
+
+  class Evento {
+    - id: UUID
+    - dataOra: DateTime
+    - tipo: string
+    - descrizione: string
+    - origine: string
+  }
+
+  class LogEventi {
+    - eventi: List[Evento]
+
+    + aggiungiEvento(e: Evento)
+    + getEventi(): List[Evento]
+    + filtraPerData(data: Date): List[Evento]
+    + filtraPerTipo(tipo: string): List[Evento]
+  }
+
+  LogEventi --> Evento
+}
+
+' =========================
+' PACKAGE UTENTI
+' =========================
+package "Gestione Utenti" {
+
+  class Utente {
+    - id: UUID
+    - username: string
+    - password: string
+    - email: string
+    - ruolo: string
+
+    + login()
+    + logout()
+    + modificaProfilo()
+    + accediPannello()
+  }
+
+}
+
+' =========================
+' PACKAGE SISTEMA
+' =========================
+package "Sistema" {
+
+  class SmartHomeSystem {
+    + controllaDispositivo(d: Dispositivo)
+    + eseguiAutomazione(a: Automazione)
+    + generaEvento(tipo: string, descrizione: string)
+    + getStatoSistema()
+  }
+
+}
+
+' =========================
+' RELAZIONI TRA PACKAGE
+' =========================
+
+Automazione --> Dispositivo : controlla
+Evento --> Dispositivo
+Evento --> Automazione
+
+Utente --> SmartHomeSystem
+
+SmartHomeSystem --> Dispositivo
+SmartHomeSystem --> Automazione
+SmartHomeSystem --> LogEventi
+
+@enduml

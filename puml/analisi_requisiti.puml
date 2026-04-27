@@ -1,0 +1,48 @@
+@startuml
+title Analisi dei requisiti - Smart Home
+
+left to right direction
+
+package "Requisiti Funzionali" {
+
+  package "Gestione Dispositivi" {
+    [RF1 - Gestione Dispositivi]
+    [RF2 - CRUD Dispositivi]
+    [RF3 - Visualizza Dispositivi]
+  }
+
+  package "Gestione Stanze" {
+    [RF4 - Gestione Stanze]
+    [RF5 - CRUD Stanze]
+    [RF6 - Visualizza Stanze]
+  }
+
+  package "Gestione Automazioni" {
+    [RF7 - Gestione Automazioni]
+    [RF8 - Inserisci Automazione]
+    [RF9 - Modifica Automazione]
+    [RF10 - Elimina Automazione]
+    [RF11 - Visualizza Automazioni]
+  }
+
+  package "Gestione Eventi" {
+    [RF12 - Registrazione Evento]
+    [RF13 - Visualizza Eventi]
+  }
+
+  package "Controllo Sistema" {
+    [RF14 - Controllo Dispositivo]
+    [RF15 - Monitoraggio Stato Dispositivi]
+  }
+}
+
+package "Requisiti Non Funzionali" {
+
+  [RNF1 - Implementazione]
+  [RNF2 - Autenticazione]
+  [RNF3 - Tempo di risposta < 3s]
+  [RNF4 - Interfaccia intuitiva]
+
+}
+
+@enduml
