@@ -1,48 +1,54 @@
 @startuml
-title Analisi dei requisiti - Smart Home
+title Analisi dei requisiti
 
 left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
 
-package "Requisiti Funzionali" {
+package "req Analisi dei requisiti" {
 
-  package "Gestione Dispositivi" {
-    [RF1 - Gestione Dispositivi]
-    [RF2 - CRUD Dispositivi]
-    [RF3 - Visualizza Dispositivi]
+  package "Requisiti funzionali descrivono funzionalita e comportamenti del sistema." as RF_ALL {
+
+    package "Gestione Utente" as RF_USER {
+      [RF1 - Gestione Account Utente]
+      [RF2 - Login Utente]
+      [RF3 - Logout Utente]
+      [RF4 - Accesso Dashboard]
+    }
+
+    package "Gestione Dispositivi e Stanze" as RF_DEV_ROOM {
+      [RF5 - Gestione Dispositivi]
+      [RF6 - Accensione e Spegnimento]
+      [RF7 - Aggiorna Valore Dispositivo]
+      [RF8 - Monitoraggio Stato Dispositivi]
+      [RF9 - Gestione Stanze]
+    }
+
+    package "Gestione Automazioni" as RF_AUT {
+      [RF10 - Crea Automazione]
+      [RF11 - Attiva e Disattiva Automazione]
+      [RF12 - Esegui Automazione]
+      [RF13 - Esecuzione Automazioni Pianificate]
+      [RF14 - Verifica Condizione Automazione]
+    }
+
+    package "Gestione Eventi e Stato Sistema" as RF_LOG_STATUS {
+      [RF15 - Genera Evento]
+      [RF16 - Registrazione Evento]
+      [RF17 - Visualizza Eventi]
+      [RF18 - Filtra Eventi per Data]
+      [RF19 - Filtra Eventi per Tipo]
+      [RF20 - Recupera Stato Sistema]
+    }
   }
 
-  package "Gestione Stanze" {
-    [RF4 - Gestione Stanze]
-    [RF5 - CRUD Stanze]
-    [RF6 - Visualizza Stanze]
+  package "Requisiti non funzionali definiscono vincoli e qualita del sistema." as RNF_ALL {
+    [RNF1 - Implementazione in Python 3]
+    [RNF2 - Autenticazione Utente]
+    [RNF3 - Tempo di risposta inferiore a 3 secondi]
+    [RNF4 - Interfaccia intuitiva]
+    [RNF5 - Modularita e separazione delle classi]
   }
-
-  package "Gestione Automazioni" {
-    [RF7 - Gestione Automazioni]
-    [RF8 - Inserisci Automazione]
-    [RF9 - Modifica Automazione]
-    [RF10 - Elimina Automazione]
-    [RF11 - Visualizza Automazioni]
-  }
-
-  package "Gestione Eventi" {
-    [RF12 - Registrazione Evento]
-    [RF13 - Visualizza Eventi]
-  }
-
-  package "Controllo Sistema" {
-    [RF14 - Controllo Dispositivo]
-    [RF15 - Monitoraggio Stato Dispositivi]
-  }
-}
-
-package "Requisiti Non Funzionali" {
-
-  [RNF1 - Implementazione]
-  [RNF2 - Autenticazione]
-  [RNF3 - Tempo di risposta < 3s]
-  [RNF4 - Interfaccia intuitiva]
-
 }
 
 @enduml

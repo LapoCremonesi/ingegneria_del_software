@@ -1,0 +1,107 @@
+@startuml
+title Gestisci Smart Home
+
+start
+
+:Login utente;
+:Verifica credenziali;
+
+if (Credenziali valide?) then (si)
+  :Accesso dashboard;
+else (no)
+  :Genera evento login fallito;
+  :Memorizza evento;
+  stop
+endif
+
+:Seleziona operazione;
+
+if (Controllo dispositivo?) then (si)
+  :Ricerca stanza;
+  :Ricerca dispositivo;
+
+  if (Accensione?) then (si)
+    :Accende dispositivo;
+  else (no)
+    if (Spegnimento?) then (si)
+      :Spegne dispositivo;
+    else (aggiorna valore)
+      :Inserisci nuovo valore;
+      :Aggiorna valore dispositivo;
+    endif
+  endif
+
+  :Genera evento dispositivo;
+  :Memorizza evento;
+  :Visualizza stato aggiornato;
+
+else (no)
+  if (Creazione automazione?) then (si)
+    :Inserisci dati automazione;
+    :Associa dispositivi;
+    :Crea automazione;
+    :Memorizza automazione;
+    :Genera evento automazione creata;
+    :Memorizza evento;
+
+  else (no)
+    if (Esecuzione automazione?) then (si)
+      :Ricerca automazione;
+      :Attiva automazione;
+      :Verifica condizione;
+
+      if (Condizione verificata?) then (si)
+        :Esegui azione automazione;
+
+        if (Azione on/off?) then (si)
+          :Aggiorna stato dispositivo;
+        else (no)
+          :Aggiorna valore dispositivo;
+        endif
+
+        :Genera evento automazione eseguita;
+      else (no)
+        :Genera evento automazione saltata;
+      endif
+
+      :Memorizza evento;
+      :Visualizza esito;
+
+    else (no)
+      if (Visualizza eventi?) then (si)
+        if (Filtro per data?) then (si)
+          :Inserisci data;
+          :Filtra eventi per data;
+        else (no)
+          if (Filtro per tipo?) then (si)
+            :Inserisci tipo;
+            :Filtra eventi per tipo;
+          else (tutti)
+            :Recupera tutti gli eventi;
+          endif
+        endif
+
+        if (Eventi presenti?) then (si)
+          :Visualizza lista eventi;
+        else (no)
+          :Visualizza lista vuota;
+        endif
+
+      else (no)
+        if (Stato sistema?) then (si)
+          :Preleva stanze;
+          :Preleva dispositivi;
+          :Preleva automazioni;
+          :Recupera stato sistema;
+          :Visualizza riepilogo sistema;
+        else (logout)
+          :Genera evento logout;
+          :Memorizza evento;
+        endif
+      endif
+    endif
+  endif
+endif
+
+stop
+@enduml

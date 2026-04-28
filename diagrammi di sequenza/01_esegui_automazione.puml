@@ -1,0 +1,45 @@
+@startuml
+title Diagramma di sequenza - Smart Home
+
+hide footbox
+skinparam shadowing false
+skinparam monochrome true
+
+actor Amministratore
+participant SmartHomeSystem as System
+participant Automation
+participant Device
+participant EventLog
+
+Amministratore -> System : executeAutomation(automation)
+activate System
+
+ref over System : RicercaUtente
+
+opt utente non autorizzato
+  System --> Amministratore : esecuzione negata
+end
+
+loop per ogni dispositivo in automazione
+  System -> Automation : checkCondition()
+  activate Automation
+
+  alt condizione verificata
+    Automation -> Device : turnOn()/turnOff()/setValue()
+    activate Device
+    Device --> Automation : stato aggiornato
+    deactivate Device
+  else condizione non verificata
+    Automation --> System : nessuna azione
+  end
+
+  deactivate Automation
+end
+
+create Automation
+System -> Automation : setRuntimeInfo()
+System -> EventLog : addEvent(AUTOMATION_EXECUTED)
+System --> Amministratore : esecuzione ok
+deactivate System
+
+@enduml

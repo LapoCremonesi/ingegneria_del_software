@@ -1,132 +1,147 @@
 @startuml
-title Package di Analisi - Smart Home (Versione Ottimizzata)
+title Package di analisi (Reale) - Smart Home
 
-' =========================
-' PACKAGE DISPOSITIVI
-' =========================
-package "Gestione Dispositivi" {
+skinparam shadowing false
+skinparam packageStyle rectangle
+left to right direction
 
-  class Dispositivo {
-    - id: UUID
-    - nome_dispositivo: string
-    - stato: bool
-    - valore: float
-    - unitaMisura: string
-    - consumoEnergetico: float
-
-    + accendi()
-    + spegni()
-    + setValore(valore: float)
-    + getStato(): boolean
-    + getInfo(): string
+package "pkg Package di analisi" {
+  package "Dispositivi" as PKG_DEV {
+    class Device
+    class Room
   }
 
-  class Stanza {
-    - id: UUID
-    - nome_stanza: string
-
-    + aggiungiDispositivo(d: Dispositivo): bool
-    + rimuoviDispositivo(d: Dispositivo): bool
-    + getDispositivi(): List[Dispositivo]
+  package "Automazioni" as PKG_AUT {
+    class Automation
   }
 
-  Stanza "1" --> "*" Dispositivo : contiene
+  package "Eventi" as PKG_EVT {
+    class Event
+    class EventLog
+  }
+
+  package "Utenti" as PKG_USR {
+    class User
+  }
+
+  package "Sistema" as PKG_SYS {
+    class SmartHomeSystem
+  }
 }
 
-' =========================
-' PACKAGE AUTOMAZIONI
-' =========================
-package "Gestione Automazioni" {
+PKG_DEV ..> PKG_AUT : <<use>>
+PKG_AUT ..> PKG_DEV : <<use>>
+PKG_AUT ..> PKG_EVT : <<use>>
+PKG_SYS ..> PKG_DEV : <<use>>
+PKG_SYS ..> PKG_AUT : <<use>>
+PKG_SYS ..> PKG_EVT : <<use>>
+PKG_SYS ..> PKG_USR : <<use>>
+PKG_USR ..> PKG_SYS : <<use>>
 
-  class Automazione {
-    - id: UUID
-    - nome_automazione: string
-    - attiva: bool
-    - orario: DateTime
-    - condizione: string
-    - azione: string
+newpage
+title Package di analisi: Dispositivi
 
-    
-    ' chiedere se sarebbe piu' corretto passare alle funzioni Automazione l'id dell'automazione
-    ' per poterlo effettivamente attivarle e disattirvale in un contesto reale
-    + attivaAutomazione()
-    + disattivaAutomazione()
-    + verificaCondizione(): boolean
+package "class Dispositivi" {
+  class Room {
+    +id: UUID
+    +name: string
+    +devices: list
+    +addDevice(device)
+    +removeDevice(device)
+    +getDevices()
   }
 
+  class Device {
+    +id: UUID
+    +name: string
+    +state: boolean
+    +value: float
+    +unit: string
+    +energyConsumption: float
+    +turnOn()
+    +turnOff()
+    +setValue(value)
+    +getState()
+    +getValue()
+  }
 }
 
-' =========================
-' PACKAGE EVENTI
-' =========================
-package "Gestione Eventi" {
+Room "1" --> "0..*" Device : contiene
 
-  class Evento {
-    - id: UUID
-    - dataOra: DateTime
-    - tipo: string
-    - descrizione: string
-    - origine: string
+newpage
+title Package di analisi: Automazioni
+
+package "class Automazioni" {
+  class Automation {
+    +id: UUID
+    +name: string
+    +active: boolean
+    +schedule: datetime
+    +condition: string
+    +action: string
+    +activate()
+    +deactivate()
+    +checkCondition()
+    +execute()
   }
-
-  class LogEventi {
-    - eventi: List[Evento]
-
-    + aggiungiEvento(e: Evento)
-    + getEventi(): List[Evento]
-    + filtraPerData(data: Date): List[Evento]
-    + filtraPerTipo(tipo: string): List[Evento]
-  }
-
-  LogEventi --> Evento
 }
 
-' =========================
-' PACKAGE UTENTI
-' =========================
-package "Gestione Utenti" {
+Automation "1" --> "0..*" Device : controlla
 
-  class Utente {
-    - id: UUID
-    - username: string
-    - password: string
-    - email: string
-    - ruolo: string
+newpage
+title Package di analisi: Eventi
 
-    + login()
-    + logout()
-    + modificaProfilo()
-    + accediPannello()
+package "class Eventi" {
+  class Event {
+    +id: UUID
+    +timestamp: datetime
+    +type: string
+    +description: string
+    +source: string
   }
 
+  class EventLog {
+    +events: list
+    +addEvent(event)
+    +getEvents()
+    +filterByDate(date)
+    +filterByType(type)
+  }
 }
 
-' =========================
-' PACKAGE SISTEMA
-' =========================
-package "Sistema" {
+EventLog "1" --> "0..*" Event : memorizza
+Event ..> Device : origine
+Event ..> Automation : origine
+
+newpage
+title Package di analisi: Utenti e Sistema
+
+package "class Utenti e Sistema" {
+  class User {
+    +id: UUID
+    +username: string
+    +password: string
+    +email: string
+    +role: string
+    +login()
+    +logout()
+    +updateProfile()
+    +accessDashboard()
+  }
 
   class SmartHomeSystem {
-    + controllaDispositivo(d: Dispositivo)
-    + eseguiAutomazione(a: Automazione)
-    + generaEvento(tipo: string, descrizione: string)
-    + getStatoSistema()
+    +controlDevice(device)
+    +executeAutomation(automation)
+    +executeAutomations()
+    +generateEvent(type, description)
+    +getSystemStatus()
   }
-
 }
 
-' =========================
-' RELAZIONI TRA PACKAGE
-' =========================
-
-Automazione --> Dispositivo : controlla
-Evento --> Dispositivo
-Evento --> Automazione
-
-Utente --> SmartHomeSystem
-
-SmartHomeSystem --> Dispositivo
-SmartHomeSystem --> Automazione
-SmartHomeSystem --> LogEventi
+User --> SmartHomeSystem : usa
+SmartHomeSystem --> Device : gestisce
+SmartHomeSystem --> Room : gestisce
+SmartHomeSystem --> Automation : gestisce
+SmartHomeSystem --> EventLog : usa
 
 @enduml

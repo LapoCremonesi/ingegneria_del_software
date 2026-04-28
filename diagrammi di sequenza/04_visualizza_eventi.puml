@@ -1,0 +1,32 @@
+@startuml
+title sd VisualizzaEventi
+
+hide footbox
+skinparam shadowing false
+skinparam monochrome true
+
+actor Utente as Viewer
+participant SmartHomeSystem as EventSystem
+participant EventLog as ViewLog
+
+Viewer -> EventSystem : richiedi eventi
+activate EventSystem
+
+alt filtro per data
+  EventSystem -> ViewLog : filterByDate(date)
+else filtro per tipo
+  EventSystem -> ViewLog : filterByType(type)
+else nessun filtro
+  EventSystem -> ViewLog : getEvents()
+end
+
+ViewLog --> EventSystem : lista eventi
+
+opt lista vuota
+  EventSystem --> Viewer : nessun evento disponibile
+end
+
+EventSystem --> Viewer : visualizzazione eventi
+deactivate EventSystem
+
+@enduml

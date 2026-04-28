@@ -1,0 +1,24 @@
+@startuml
+title Verifica Stato Sistema
+
+start
+
+:Login utente;
+:Verifica credenziali;
+
+if (Credenziali valide?) then (si)
+  :Accesso dashboard;
+else (no)
+  :Genera evento login fallito;
+  :Memorizza evento;
+  stop
+endif
+
+:Preleva stanze;
+:Preleva dispositivi;
+:Preleva automazioni;
+:Recupera stato sistema;
+:Visualizza riepilogo sistema;
+
+stop
+@enduml

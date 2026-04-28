@@ -1,0 +1,25 @@
+@startuml
+title Crea Automazione
+
+start
+
+:Login utente;
+:Verifica credenziali;
+
+if (Credenziali valide?) then (si)
+  :Accesso dashboard;
+else (no)
+  :Genera evento login fallito;
+  :Memorizza evento;
+  stop
+endif
+
+:Inserisci dati automazione;
+:Associa dispositivi;
+:Crea automazione;
+:Memorizza automazione;
+:Genera evento automazione creata;
+:Memorizza evento;
+
+stop
+@enduml

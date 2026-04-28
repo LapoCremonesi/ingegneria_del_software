@@ -1,0 +1,39 @@
+@startuml
+title Esegui Automazione
+
+start
+
+:Login utente;
+:Verifica credenziali;
+
+if (Credenziali valide?) then (si)
+  :Accesso dashboard;
+else (no)
+  :Genera evento login fallito;
+  :Memorizza evento;
+  stop
+endif
+
+:Ricerca automazione;
+:Attiva automazione;
+:Verifica condizione;
+
+if (Condizione verificata?) then (si)
+  :Esegui azione automazione;
+
+  if (Azione on/off?) then (si)
+    :Aggiorna stato dispositivo;
+  else (no)
+    :Aggiorna valore dispositivo;
+  endif
+
+  :Genera evento automazione eseguita;
+else (no)
+  :Genera evento automazione saltata;
+endif
+
+:Memorizza evento;
+:Visualizza esito;
+
+stop
+@enduml

@@ -1,0 +1,36 @@
+@startuml
+title Visualizza Eventi
+
+start
+
+:Login utente;
+:Verifica credenziali;
+
+if (Credenziali valide?) then (si)
+  :Accesso dashboard;
+else (no)
+  :Genera evento login fallito;
+  :Memorizza evento;
+  stop
+endif
+
+if (Filtro per data?) then (si)
+  :Inserisci data;
+  :Filtra eventi per data;
+else (no)
+  if (Filtro per tipo?) then (si)
+    :Inserisci tipo;
+    :Filtra eventi per tipo;
+  else (tutti)
+    :Recupera tutti gli eventi;
+  endif
+endif
+
+if (Eventi presenti?) then (si)
+  :Visualizza lista eventi;
+else (no)
+  :Visualizza lista vuota;
+endif
+
+stop
+@enduml

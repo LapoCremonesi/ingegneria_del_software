@@ -1,0 +1,41 @@
+@startuml
+title sd EseguiAutomazioniPianificate
+
+hide footbox
+skinparam shadowing false
+skinparam monochrome true
+
+actor Tempo
+participant SmartHomeSystem as Scheduler
+participant Automation as SAutomation
+participant Device as SDevice
+participant EventLog as SLog
+
+Tempo -> Scheduler : executeAutomations()
+activate Scheduler
+
+loop per ogni automazione attiva
+  Scheduler -> SAutomation : verifica schedule
+  SAutomation --> Scheduler : due o non due
+
+  alt automazione da eseguire ora
+    Scheduler -> SAutomation : checkCondition()
+    SAutomation --> Scheduler : condizione
+
+    alt condizione verificata
+      Scheduler -> SAutomation : execute()
+      SAutomation -> SDevice : aggiorna stato/valore
+      SDevice --> SAutomation : aggiornato
+      Scheduler -> SLog : addEvent(SCHEDULED_AUTOMATION)
+    else condizione non verificata
+      Scheduler -> SLog : addEvent(AUTOMATION_SKIPPED)
+    end
+  else non in orario
+    Scheduler -> Scheduler : passa alla successiva
+  end
+end
+
+Scheduler --> Tempo : ciclo completato
+deactivate Scheduler
+
+@enduml

@@ -1,0 +1,35 @@
+@startuml
+title sd VerificaStatoSistema
+
+hide footbox
+skinparam shadowing false
+skinparam monochrome true
+
+actor Utente as DashboardUser
+participant SmartHomeSystem as StatusSystem
+participant Room as StatusRoom
+participant Device as StatusDevice
+participant Automation as StatusAutomation
+
+DashboardUser -> StatusSystem : getSystemStatus()
+activate StatusSystem
+
+StatusSystem -> StatusRoom : getRooms()
+StatusRoom --> StatusSystem : stanze
+
+loop per ogni stanza
+  StatusSystem -> StatusRoom : getDevices()
+  StatusRoom --> StatusSystem : dispositivi
+end
+
+loop per ogni dispositivo
+  StatusSystem -> StatusDevice : getState()
+  StatusSystem -> StatusDevice : getValue()
+end
+
+StatusSystem -> StatusAutomation : getActiveAutomations()
+StatusAutomation --> StatusSystem : automazioni attive
+StatusSystem --> DashboardUser : riepilogo sistema
+deactivate StatusSystem
+
+@enduml

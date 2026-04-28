@@ -1,0 +1,32 @@
+@startuml
+title sd ControllaDispositivo
+
+hide footbox
+skinparam shadowing false
+skinparam monochrome true
+
+actor Utente
+participant SmartHomeSystem as CtrlSystem
+participant Room
+participant Device as CtrlDevice
+participant EventLog as CtrlLog
+
+Utente -> CtrlSystem : controlDevice(device, comando)
+activate CtrlSystem
+CtrlSystem -> Room : getDevices()
+Room --> CtrlSystem : lista dispositivi
+
+alt comando accensione
+  CtrlSystem -> CtrlDevice : turnOn()
+else comando spegnimento
+  CtrlSystem -> CtrlDevice : turnOff()
+else comando aggiornamento valore
+  CtrlSystem -> CtrlDevice : setValue(value)
+end
+
+CtrlDevice --> CtrlSystem : stato o valore aggiornato
+CtrlSystem -> CtrlLog : addEvent(DEVICE_UPDATED)
+CtrlSystem --> Utente : operazione completata
+deactivate CtrlSystem
+
+@enduml
