@@ -28,7 +28,7 @@ Utente -> VistaSistema : generaStatistiche(filtro)
 Amministratore -> VistaSistema : generaStatistiche(filtro)
 VistaSistema -> ControlloreSistema : generaStatistiche(filtro)
 ControlloreSistema -> ServizioSistema : generaStatistiche(filtro)
-ServizioSistema -> RepositoryEventi : aggiungi(filtro)
+ServizioSistema -> RepositoryEventi : cerca(filtro)
 RepositoryEventi --> ServizioSistema : elencoEventi
 ServizioSistema --> ControlloreSistema : elencoEventi
 ControlloreSistema --> VistaSistema : mostraStatistiche(elencoEventi)

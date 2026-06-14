@@ -64,7 +64,7 @@ diagramma_sequenza/ LUCA
 
 8. diagramma_sequenza_accesso_dashboard.puml
    - RIGHE 14-17: Sostituire ControlloreDashboard con ControlloreSistema e
-     ServizioDashboard con ServizioSistema (o viceversa, previo aggiornamento
+     ServizioDashboard con ControlloreSistema (o viceversa, previo aggiornamento
      di classi_applicative.puml).
 
 9. diagramma_sequenza_gestione_stanze_dispositivi.puml

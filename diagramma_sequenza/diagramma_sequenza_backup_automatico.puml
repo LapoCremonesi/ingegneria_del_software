@@ -4,21 +4,21 @@ title Sequenza OOP - Backup automatico
 actor Tempo
 
 box "Interfaccia"
-participant "VistaBackup" as VistaBackup
+participant "VistaSistema" as VistaSistema
 end box
 
 box "Logica applicativa"
-participant "ControlloreBackup" as ControlloreBackup
-participant "ServizioBackup" as ServizioBackup
+participant "ControlloreSistema" as ControlloreSistema
+participant "ServizioSistema" as ServizioSistema
 database "RepositoryDatiSistema" as RepositoryDatiSistema
 participant "ServizioLog" as ServizioLog
 end box
 
-Tempo -> VistaBackup : avviaBackup()
-VistaBackup -> ControlloreBackup : avviaBackup()
-ControlloreBackup -> ServizioBackup : eseguiBackup()
-ServizioBackup -> RepositoryDatiSistema : estraiDati()
-RepositoryDatiSistema --> ServizioBackup : datiBackup
-ServizioBackup -> ServizioLog : registraEvento("BACKUP_COMPLETATO", messaggio)
-ServizioBackup --> ControlloreBackup : risultatoBackup
+Tempo -> VistaSistema : avviaBackup()
+VistaSistema -> ControlloreSistema : avviaBackup()
+ControlloreSistema -> ServizioSistema : eseguiBackup()
+ServizioSistema -> RepositoryDatiSistema : estraiDati()
+RepositoryDatiSistema --> ServizioSistema : datiBackup
+ServizioSistema -> ServizioLog : registraEvento("BACKUP_COMPLETATO", messaggio)
+ServizioSistema --> ControlloreSistema : risultatoBackup
 @enduml

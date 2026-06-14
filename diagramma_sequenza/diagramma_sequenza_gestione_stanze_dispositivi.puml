@@ -18,8 +18,8 @@ database "RepositoryStanze" as RepositoryStanze
 database "RepositoryDispositivi" as RepositoryDispositivi
 end box
 
-== Crea stanza ==
-Utente -> VistaStanze : creaStanza(nome)
+' "creaStanza(nome)" -> "creaStanza(nome, piano)"
+Utente -> VistaStanze : creaStanza(nome, piano)
 VistaStanze -> ControlloreStanze : creaStanza(nome)
 ControlloreStanze -> ServizioStanze : creaStanza(nome)
 ServizioStanze -> RepositoryStanze : salva(stanza)

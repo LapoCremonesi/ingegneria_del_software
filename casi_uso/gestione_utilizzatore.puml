@@ -9,7 +9,6 @@ rectangle "Funzionalità Utente" {
   usecase "Gestione dispositivi (CRUD)" as UC3
   usecase "Controllo dispositivi" as UC4
   usecase "Gestione automazioni (CRUD)" as UC5
-  usecase "Gestione backup" as UC7
   usecase "Monitoraggio e statistiche" as UC8
   usecase "Registrazione eventi di sistema" as UCE1
 }
@@ -19,12 +18,9 @@ U --> UC2
 U --> UC3
 U --> UC4
 U --> UC5
-U --> UC7
-U --> UC8
 
 UC4 ..> UCE1 : <<include>>
 UC5 ..> UCE1 : <<include>>
-UC7 ..> UCE1 : <<include>>
 UC8 ..> UCE1 : <<include>>
 
 @enduml

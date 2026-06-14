@@ -11,10 +11,9 @@ end box
 
 box "Logica applicativa"
 participant "ControlloreAutenticazione" as ControlloreAutenticazione
-participant "ControlloreDashboard" as ControlloreDashboard
+participant "ControlloreSistema" as ControlloreSistema
 participant "ServizioUtenti" as ServizioUtenti
 database "RepositoryUtenti" as RepositoryUtenti
-participant "ServizioDashboard" as ServizioDashboard
 end box
 
 Utente -> VistaLogin : inserisciCredenziali(email, password)
@@ -26,10 +25,10 @@ RepositoryUtenti --> ServizioUtenti : utente
 
 alt credenziali valide
   ServizioUtenti --> ControlloreAutenticazione : utenteAutenticato
-  ControlloreAutenticazione -> ControlloreDashboard : apriDashboard(idUtente)
-  ControlloreDashboard -> ServizioDashboard : caricaRiepilogo(idUtente)
-  ServizioDashboard --> ControlloreDashboard : datiDashboard
-  ControlloreDashboard --> VistaDashboard : mostraDashboard(datiDashboard)
+  ControlloreAutenticazione -> ControlloreSistema : apriDashboard(idUtente)
+  ControlloreSistema -> ServizioSistema : caricaRiepilogo(idUtente)
+  ServizioSistema --> ControlloreSistema : datiDashboard
+  ControlloreSistema --> VistaDashboard : mostraDashboard(datiDashboard)
 else credenziali non valide
   ServizioUtenti --> ControlloreAutenticazione : erroreAutenticazione
   ControlloreAutenticazione --> VistaLogin : mostraErroreLogin()

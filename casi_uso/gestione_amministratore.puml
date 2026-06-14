@@ -28,9 +28,9 @@ A --> UC8
 T --> UC7
 T --> UC5
 
-UC4 ..> UCE1
-UC5 ..> UCE1
-UC7 ..> UCE1
-UC8 ..> UCE1
+UC4 ..> UCE1 : <<include>>
+UC5 ..> UCE1 : <<include>>
+UC7 ..> UCE1 : <<include>>
+UC8 ..> UCE1 : <<include>>
 
 @enduml
