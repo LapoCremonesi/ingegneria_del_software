@@ -10,6 +10,10 @@ class Utente {
 
 class Amministratore {
   +livelloAccesso: int
+  +gestisciAutomazione(auto: Automazione): void
+  +consultaLog(): List<Evento>
+  +creaUtente(utente: Utente): Boolean
+  +eliminaUtente(id: int): Boolean
 }
 
 class Stanza {

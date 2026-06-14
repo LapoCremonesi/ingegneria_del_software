@@ -11,6 +11,9 @@ package "Analisi Smart Home" as PanalisiSH <<Analysis>> {
       + id: int
       + email: String
       + autentica(password: String): Boolean
+      + cambia_password(nuova_password: String): void
+      + get_email(): String
+      + get_id(): int
     }
 
     class Amministratore <<Entity>> {
@@ -37,18 +40,6 @@ package "Analisi Smart Home" as PanalisiSH <<Analysis>> {
       + tipo: String
     }
 
-    class LogEventi <<Entity>> {
-      + id: int
-      + eventi: List<Evento>
-      + aggiungi_evento(evento: Evento): void
-    }
-
-    Utente <|-- Amministratore
-    Automazione "1" o-- "1..*" Regola
-    LogEventi "1" o-- "0..*" Evento
-  }
-
-  package "Servizio" as PServizio <<Service>> {
     class Dispositivo <<Entity>> {
       + id: int
       + nome: String
@@ -63,6 +54,19 @@ package "Analisi Smart Home" as PanalisiSH <<Analysis>> {
       + aggiungi_dispositivo(disp: Dispositivo): void
     }
 
+    class LogEventi <<Entity>> {
+      + id: int
+      + eventi: List<Evento>
+      + aggiungi_evento(evento: Evento): void
+    }
+
+    Utente <|-- Amministratore
+    Automazione "1" o-- "1..*" Regola
+    Stanza "1" o-- "0..*" Dispositivo
+    LogEventi "1" o-- "0..*" Evento
+  }
+
+  package "Servizio" as PServizio <<Service>> {
     class ServizioDispositivi <<Service>> {
       + elenca_dispositivi(): List<Dispositivo>
       + invia_comando(id: int, comando: String): void
@@ -73,7 +77,6 @@ package "Analisi Smart Home" as PanalisiSH <<Analysis>> {
       + crea_stanza(nome: String, piano: int): Stanza
     }
 
-    Stanza "1" o-- "0..*" Dispositivo
     ServizioDispositivi --> Dispositivo
     ServizioStanze --> Stanza
   }

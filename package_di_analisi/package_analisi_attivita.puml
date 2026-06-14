@@ -73,9 +73,9 @@ package "Gestione Attività" as PktAttivita <<Dominio>> {
   }
 }
 
-Utente <|-- Amministratore : <<extend>>
-Automazione "1" o-- "1..*" Regola : contiene >
-LogEventi "1" o-- "0..*" Evento : registra >
-Amministratore "1" --> "0..*" Automazione : gestisce >
+Utente <|-- Amministratore
+Automazione "1" o-- "1..*" Regola : contiene
+LogEventi "1" o-- "0..*" Evento : registra
+Amministratore "1" --> "0..*" Automazione : gestisce
 
 @enduml

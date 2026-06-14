@@ -37,50 +37,28 @@ package "Gestione Servizi" as PktServizio <<Service>> {
     + get_tipo(): String
   }
 
-  class AssegnazioneDispositivo {
-    + id: int
-    + id_dispositivo: int
-    + id_stanza: int
-    + data_inizio: DateTime
-    + data_fine: DateTime
-    + __init__(id: int, id_disp: int, id_stanza: int, data_inizio: DateTime)
-    + termina_assegnazione(): void
-    + get_durata(): int
-    + is_attiva(): Boolean
-    + get_data_inizio(): DateTime
-    + get_data_fine(): DateTime
-  }
-
   class ServizioStanze {
-    + crea_stanza(nome: String, piano: int): Stanza
-    + elenca_stanze(): List<Stanza>
-    + elenca_stanze_per_piano(piano: int): List<Stanza>
-    + elimina_stanza(id: int): Boolean
-    + assegna_dispositivo(id_disp: int, id_stanza: int): void
-    + get_stanza_per_id(id: int): Stanza
-    + aggiorna_stanza(stanza: Stanza): Boolean
+    + crea(stanza: Stanza): Stanza
+    + aggiorna(stanza: Stanza): Stanza
+    + elimina(id_stanza: int): Boolean
+    + elenca(): List<Stanza>
   }
 
   class ServizioDispositivi {
-    + elenca_dispositivi(): List<Dispositivo>
-    + trova_per_stanza(id_stanza: int): List<Dispositivo>
-    + invia_comando(id: int, comando: String): Boolean
-    + cambia_stato_dispositivo(id: int, nuovo_stato: String): Boolean
-    + registra_dispositivo(dispositivo: Dispositivo): Dispositivo
-    + elimina_dispositivo(id: int): Boolean
-    + get_dispositivo_per_id(id: int): Dispositivo
-    + elenca_dispositivi_online(): List<Dispositivo>
+    + crea(dispositivo: Dispositivo): Dispositivo
+    + aggiorna(dispositivo: Dispositivo): Dispositivo
+    + elimina(id_dispositivo: int): Boolean
+    + elenca(): List<Dispositivo>
+    + invia_comando(id_dispositivo: int, comando: String): Dispositivo
   }
 }
 
-Stanza "1" o-- "0..*" Dispositivo : contiene >
-Stanza "1" -- "0..*" AssegnazioneDispositivo : registra >
-Dispositivo "1" -- "0..*" AssegnazioneDispositivo : soggetto di >
+Stanza "1" o-- "0..*" Dispositivo : contiene
 
-ServizioStanze "1" --> "0..*" Stanza : gestisce >
-ServizioDispositivi "1" --> "0..*" Dispositivo : gestisce >
+ServizioStanze "1" --> "0..*" Stanza : gestisce
+ServizioDispositivi "1" --> "0..*" Dispositivo : gestisce
 
-ServizioStanze --> Dispositivo : assegna >
-ServizioDispositivi --> Stanza : opera su >
+ServizioStanze --> Dispositivo : assegna
+ServizioDispositivi --> Stanza : opera su
 
 @enduml

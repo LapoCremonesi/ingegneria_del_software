@@ -3,6 +3,8 @@ title Diagramma Classi - Repository Casa Intelligente (Persistenza JSON)
 
 interface RepositoryUtenti {
   +trovaPerEmail(email: String): Utente
+  +salva(utente: Utente)
+  +aggiorna(utente: Utente)
 }
 
 interface RepositoryStanze {
@@ -61,24 +63,19 @@ RepositoryEventiJSON ..|> RepositoryEventi
 RepositoryDatiSistemaJSON ..|> RepositoryDatiSistema
 
 class ServizioUtenti
-class ServizioDashboard
 class ServizioStanze
 class ServizioDispositivi
 class ServizioAutomazioni
 class ServizioLog
 class ServizioSistema
-class ServizioBackup
 
 ServizioUtenti --> RepositoryUtenti
-ServizioDashboard --> RepositoryStanze
-ServizioDashboard --> RepositoryDispositivi
-ServizioDashboard --> RepositoryEventi
 ServizioStanze --> RepositoryStanze
 ServizioDispositivi --> RepositoryDispositivi
 ServizioAutomazioni --> RepositoryAutomazioni
 ServizioLog --> RepositoryEventi
+ServizioSistema --> RepositoryStanze
 ServizioSistema --> RepositoryDispositivi
 ServizioSistema --> RepositoryEventi
-ServizioBackup --> RepositoryDatiSistema
-ServizioBackup --> RepositoryEventi
+ServizioSistema --> RepositoryDatiSistema
 @enduml
