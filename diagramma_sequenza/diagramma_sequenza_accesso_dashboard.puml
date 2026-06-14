@@ -6,7 +6,7 @@ actor Amministratore
 
 box "Interfaccia"
 participant "VistaLogin" as VistaLogin
-participant "VistaDashboard" as VistaDashboard
+participant "VistaSistema" as VistaSistema
 end box
 
 box "Logica applicativa"
@@ -28,7 +28,7 @@ alt credenziali valide
   ControlloreAutenticazione -> ControlloreSistema : apriDashboard(idUtente)
   ControlloreSistema -> ServizioSistema : caricaRiepilogo(idUtente)
   ServizioSistema --> ControlloreSistema : datiDashboard
-  ControlloreSistema --> VistaDashboard : mostraDashboard(datiDashboard)
+  ControlloreSistema --> VistaSistema : mostraDashboard(datiDashboard)
 else credenziali non valide
   ServizioUtenti --> ControlloreAutenticazione : erroreAutenticazione
   ControlloreAutenticazione --> VistaLogin : mostraErroreLogin()

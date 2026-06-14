@@ -3,6 +3,7 @@ left to right direction
 
 actor "Utente" as U
 actor "Amministratore" as A
+actor "Tempo" as T
 
 rectangle "Gestione Sistema e Monitoraggio" {
   usecase "Gestione backup" as UC7
@@ -14,6 +15,8 @@ U --> UC8
 
 A --> UC7
 A --> UC8
+
+T --> UC7
 
 UC7 ..> UCE1 : <<include>>
 UC8 ..> UCE1 : <<include>>

@@ -9,7 +9,7 @@ end box
 
 box "Logica applicativa"
 participant "ServizioAutomazioni" as ServizioAutomazioni
-participant "ControlloreAutomazioni" as ControlloreAutomazioni
+participant "ControlloreDispositivi" as ControlloreDispositivi
 participant "ServizioDispositivi" as ServizioDispositivi
 participant "ServizioLog" as ServizioLog
 end box
@@ -19,10 +19,10 @@ Sistema -> ServizioAutomazioni : elenca()
 ServizioAutomazioni --> Sistema : automazioniAttive
 
 loop per ogni automazione
-  Sistema -> ControlloreAutomazioni : inviaComando(idDispositivo, comando)
-  ControlloreAutomazioni -> ServizioDispositivi : inviaComando(idDispositivo, comando)
-  ServizioDispositivi --> ControlloreAutomazioni : dispositivoAggiornato
-  ControlloreAutomazioni --> Sistema : dispositivoAggiornato
+  Sistema -> ControlloreDispositivi : inviaComando(idDispositivo, comando)
+  ControlloreDispositivi -> ServizioDispositivi : inviaComando(idDispositivo, comando)
+  ServizioDispositivi --> ControlloreDispositivi : dispositivoAggiornato
+  ControlloreDispositivi --> Sistema : dispositivoAggiornato
   Sistema -> ServizioLog : registraEvento("AUTOMAZIONE_ESEGUITA", messaggio)
 end
 @enduml
