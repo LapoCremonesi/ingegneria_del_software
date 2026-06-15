@@ -1,13 +1,33 @@
 @startuml
-  title Diagramma Attivita - Backup automatico (Sistema / Amministratore)
-  
+  title Diagramma Attivita - Backup e ripristino (Sistema / Amministratore)
+
   start
-    :Avvio schedulato backup;
-    :Raccogliere dati sistema;
-  if (Salvataggio riuscito?) then (Si)
-    :Registrare backup completato;
-  else (No)
-    :Registrare errore backup;
+  :Scegliere operazione;
+  if (Tipo operazione?) then (Backup)
+    :Avviare backup (manuale o schedulato);
+    :Raccogliere dati da tutti i file JSON;
+    :Creare file unificato backup/backup_*.json;
+    if (Salvataggio riuscito?) then (Si)
+      :Registrare evento BACKUP_COMPLETATO;
+      :Mostrare percorso file;
+    else (No)
+      :Registrare errore backup;
+    endif
+  elseif (Ripristino)
+    :Elencare backup disponibili;
+    :Selezionare file backup;
+    :Confermare sovrascrittura;
+    :Leggere file backup unificato;
+    :Sovrascrivere i 5 file JSON originali;
+    if (Ripristino riuscito?) then (Si)
+      :Registrare evento RIPRISTINO_COMPLETATO;
+      :Mostrare conferma;
+    else (No)
+      :Registrare errore ripristino;
+    endif
+  else (Visualizza elenco)
+    :Scansionare cartella backup/;
+    :Mostrare lista backup disponibili;
   endif
   stop
 @enduml

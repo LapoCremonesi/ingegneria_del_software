@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
+progetto_ingegneria_software/lib/
+progetto_ingegneria_software/lib64/
+progetto_ingegneria_software/bin/
+progetto_ingegneria_software/include/
+progetto_ingegneria_software/share/
+progetto_ingegneria_software/pyvenv.cfg
+
+# Backup files
+progetto_ingegneria_software/smart_home/backup/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

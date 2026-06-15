@@ -9,6 +9,7 @@ interface RepositoryUtenti {
 
 interface RepositoryStanze {
   +trovaTutti(): List<Stanza>
+  +trovaPerId(id: int): Stanza
   +salva(stanza: Stanza)
   +aggiorna(stanza: Stanza)
   +elimina(id: int)
@@ -26,6 +27,7 @@ interface RepositoryDispositivi {
 
 interface RepositoryAutomazioni {
   +trovaTutti(): List<RegolaAutomazione>
+  +trovaPerId(id: int): RegolaAutomazione
   +trovaAttive(): List<RegolaAutomazione>
   +salva(regola: RegolaAutomazione)
   +aggiorna(regola: RegolaAutomazione)
@@ -39,7 +41,9 @@ interface RepositoryEventi {
 }
 
 interface RepositoryDatiSistema {
-  +estraiDati(): String
+  +salvaBackup(): String
+  +elencaBackup(): List<String>
+  +caricaBackup(percorso: String): String
 }
 
 class RepositoryUtentiJSON {

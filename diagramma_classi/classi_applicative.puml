@@ -42,7 +42,9 @@ class VistaSistema {
   +mostraDashboard(dati: String)
   +mostraMonitoraggio(dispositivi: List<Dispositivo>)
   +mostraStatistiche(eventi: List<Evento>)
-  +avviaBackup()
+  +salvaBackup()
+  +mostraBackupDisponibili(backup: List<String>)
+  +caricaBackup(percorso: String)
 }
 
 ' ==================== CONTROLLORI ====================
@@ -55,6 +57,7 @@ class ControlloreStanze {
   +aggiornaStanza(stanza: Stanza): Stanza
   +eliminaStanza(idStanza: int): bool
   +elencaStanze(): List<Stanza>
+  +trovaStanzaPerId(id: int): Stanza
 }
 
 class ControlloreDispositivi {
@@ -62,6 +65,7 @@ class ControlloreDispositivi {
   +aggiornaDispositivo(dispositivo: Dispositivo): Dispositivo
   +eliminaDispositivo(idDispositivo: int): bool
   +elencaDispositivi(): List<Dispositivo>
+  +trovaDispositivoPerId(id: int): Dispositivo
   +inviaComando(idDispositivo: int, comando: String): Dispositivo
 }
 
@@ -70,6 +74,7 @@ class ControlloreAutomazioni {
   +aggiornaRegola(regola: RegolaAutomazione): RegolaAutomazione
   +eliminaRegola(idRegola: int): bool
   +elencaRegole(): List<RegolaAutomazione>
+  +trovaRegolaPerId(id: int): RegolaAutomazione
 }
 
 class ControlloreLog {
@@ -81,7 +86,9 @@ class ControlloreSistema {
   +apriDashboard(idUtente: int)
   +monitoraDispositivi(): List<Dispositivo>
   +generaStatistiche(filtro: String): List<Evento>
-  +avviaBackup()
+  +salvaBackup(): String
+  +elencaBackup(): List<String>
+  +caricaBackup(percorso: String): String
 }
 
 ' ==================== SERVIZI ====================
@@ -94,6 +101,7 @@ class ServizioStanze {
   +aggiorna(stanza: Stanza): Stanza
   +elimina(idStanza: int): bool
   +elenca(): List<Stanza>
+  +trovaPerId(id: int): Stanza
 }
 
 class ServizioDispositivi {
@@ -101,6 +109,7 @@ class ServizioDispositivi {
   +aggiorna(dispositivo: Dispositivo): Dispositivo
   +elimina(idDispositivo: int): bool
   +elenca(): List<Dispositivo>
+  +trovaPerId(id: int): Dispositivo
   +inviaComando(idDispositivo: int, comando: String): Dispositivo
 }
 
@@ -109,6 +118,7 @@ class ServizioAutomazioni {
   +aggiorna(regola: RegolaAutomazione): RegolaAutomazione
   +elimina(idRegola: int): bool
   +elenca(): List<RegolaAutomazione>
+  +trovaPerId(id: int): RegolaAutomazione
 }
 
 class ServizioLog {
@@ -121,7 +131,9 @@ class ServizioSistema {
   +caricaRiepilogo(idUtente: int): String
   +monitoraDispositivi(): List<Dispositivo>
   +generaStatistiche(filtro: String): List<Evento>
-  +eseguiBackup(): String
+  +salvaBackup(): String
+  +elencaBackup(): List<String>
+  +caricaBackup(percorso: String): String
 }
 
 ' ==================== RELAZIONI ====================

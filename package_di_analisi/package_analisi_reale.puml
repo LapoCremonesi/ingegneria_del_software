@@ -47,6 +47,20 @@ package "Analisi Smart Home" as PanalisiSH <<Analysis>> {
       + invia_comando(comando: String): Boolean
     }
 
+    class Luce <<Entity>> {
+      + intensita: int
+      + colore: String
+    }
+
+    class Termostato <<Entity>> {
+      + temperatura_target: float
+      + modalita: String
+    }
+
+    class Serratura <<Entity>> {
+      + modalita_sicurezza: Boolean
+    }
+
     class Stanza <<Entity>> {
       + id: int
       + nome: String
@@ -63,6 +77,9 @@ package "Analisi Smart Home" as PanalisiSH <<Analysis>> {
     Utente <|-- Amministratore
     Automazione "1" o-- "1..*" Regola
     Stanza "1" o-- "0..*" Dispositivo
+    Dispositivo <|-- Luce
+    Dispositivo <|-- Termostato
+    Dispositivo <|-- Serratura
     LogEventi "1" o-- "0..*" Evento
   }
 
@@ -95,6 +112,12 @@ package "Analisi Smart Home" as PanalisiSH <<Analysis>> {
     class RepositoryDispositivi <<Repository>> {
       + salva(dispositivo: Dispositivo): void
       + trova_per_id(id: int): Dispositivo
+    }
+
+    class RepositoryDatiSistema <<Repository>> {
+      + salva_backup(): String
+      + elenca_backup(): List<String>
+      + carica_backup(percorso: String): String
     }
   }
 }

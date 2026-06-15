@@ -11,7 +11,7 @@ rectangle "Funzionalità Amministratore" {
   usecase "Controllo dispositivi" as UC4
   usecase "Gestione automazioni (CRUD)" as UC5
   usecase "Consultazione storico eventi" as UC6
-  usecase "Gestione backup" as UC7
+  usecase "Gestione backup e ripristino" as UC7
   usecase "Monitoraggio e statistiche" as UC8
   usecase "Registrazione eventi di sistema" as UCE1
 }

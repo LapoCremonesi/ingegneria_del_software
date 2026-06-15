@@ -1,0 +1,93 @@
+[
+  {
+    "id": 1,
+    "timestamp": "2026-06-15T16:32:39.587704",
+    "tipo": "COMANDO_ESEGUITO",
+    "descrizione": "Comando 'accendi' eseguito su 'Luce soggiorno'",
+    "id_dispositivo": 1
+  },
+  {
+    "id": 2,
+    "timestamp": "2026-06-15T16:32:39.588282",
+    "tipo": "COMANDO_FALLITO",
+    "descrizione": "Comando 'accendi' fallito su 'Serratura ingresso'",
+    "id_dispositivo": 4
+  },
+  {
+    "id": 3,
+    "timestamp": "2026-06-15T16:32:39.596771",
+    "tipo": "BACKUP_COMPLETATO",
+    "descrizione": "Backup dei dati di sistema completato con successo",
+    "id_dispositivo": null
+  },
+  {
+    "id": 1,
+    "timestamp": "2026-06-15T16:50:34.295997",
+    "tipo": "COMANDO_ESEGUITO",
+    "descrizione": "Comando 'attenua 50' eseguito su 'Luce soggiorno'",
+    "id_dispositivo": 1
+  },
+  {
+    "id": 2,
+    "timestamp": "2026-06-15T16:50:34.298808",
+    "tipo": "COMANDO_ESEGUITO",
+    "descrizione": "Comando 'imposta 24' eseguito su 'Termostato soggiorno'",
+    "id_dispositivo": 2
+  },
+  {
+    "id": 3,
+    "timestamp": "2026-06-15T16:50:34.302981",
+    "tipo": "DISPOSITIVO_CREATO",
+    "descrizione": "Dispositivo 'TestDisp' creato",
+    "id_dispositivo": null
+  },
+  {
+    "id": 1,
+    "timestamp": "2026-06-15T16:53:50.710802",
+    "tipo": "DISPOSITIVO_CREATO",
+    "descrizione": "Dispositivo 'prova' creato",
+    "id_dispositivo": null
+  },
+  {
+    "id": 2,
+    "timestamp": "2026-06-15T16:54:05.301637",
+    "tipo": "BACKUP_COMPLETATO",
+    "descrizione": "Backup dei dati di sistema completato con successo",
+    "id_dispositivo": null
+  },
+  {
+    "id": 2,
+    "timestamp": "2026-06-15T17:04:42.311411",
+    "tipo": "RIPRISTINO_COMPLETATO",
+    "descrizione": "Ripristino completato da: backup_2026-06-15_170442.json",
+    "id_dispositivo": null
+  },
+  {
+    "id": "a7878788-f721-403e-bf8b-931b106e6b2d",
+    "timestamp": "2026-06-15T22:25:26.463779",
+    "tipo": "RIPRISTINO_COMPLETATO",
+    "descrizione": "Ripristino completato da: backup_2026-06-15_170806.json",
+    "id_dispositivo": null
+  },
+  {
+    "id": "5c54c125-56e6-4a08-8eff-f566dcb082fc",
+    "timestamp": "2026-06-15T22:28:12.942459",
+    "tipo": "DISPOSITIVO_CREATO",
+    "descrizione": "Dispositivo 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj' creato",
+    "id_dispositivo": null
+  },
+  {
+    "id": "269da8c8-a9a0-439d-b1d4-d51427ab7ce8",
+    "timestamp": "2026-06-15T22:29:17.439334",
+    "tipo": "COMANDO_ESEGUITO",
+    "descrizione": "Comando 'accendi' eseguito su 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj'",
+    "id_dispositivo": "63c9632c-733d-4e53-b632-630c93368d24"
+  },
+  {
+    "id": "1868ca25-d8e5-4212-9c61-dad65a796d53",
+    "timestamp": "2026-06-15T22:29:17.440968",
+    "tipo": "AUTOMAZIONE_ESEGUITA",
+    "descrizione": "Automazione 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj' eseguita su dispositivo 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj'",
+    "id_dispositivo": null
+  }
+]

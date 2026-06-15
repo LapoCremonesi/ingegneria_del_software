@@ -6,7 +6,7 @@ actor "Amministratore" as A
 actor "Tempo" as T
 
 rectangle "Gestione Sistema e Monitoraggio" {
-  usecase "Gestione backup" as UC7
+  usecase "Gestione backup e ripristino" as UC7
   usecase "Monitoraggio e statistiche" as UC8
   usecase "Registrazione eventi di sistema" as UCE1
 }

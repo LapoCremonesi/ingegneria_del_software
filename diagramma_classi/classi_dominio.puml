@@ -30,6 +30,30 @@ class Dispositivo {
   +online: bool
   +idStanza: int
   +applicaComando(comando: String): bool
+  +accendi(): void
+  +spegni(): void
+}
+
+class Luce {
+  +intensita: int (0-100)
+  +colore: String
+  +attenua(valore: int): bool
+  +cambiaColore(colore: String): bool
+}
+
+class Termostato {
+  +temperaturaTarget: float
+  +modalita: String
+  +impostaTemperatura(temp: float): bool
+  +cambiaModalita(modalita: String): bool
+}
+
+class Serratura {
+  +modalitaSicurezza: bool
+  +blocca(): void
+  +sblocca(): bool
+  +attivaSicurezza(): void
+  +disattivaSicurezza(): void
 }
 
 class RegolaAutomazione {
@@ -51,6 +75,9 @@ class Evento {
 
 Utente <|-- Amministratore
 Stanza "1" -- "*" Dispositivo
+Dispositivo <|-- Luce
+Dispositivo <|-- Termostato
+Dispositivo <|-- Serratura
 RegolaAutomazione ..> Dispositivo : controlla
 Evento "*" --> "0..1" Dispositivo
 @enduml

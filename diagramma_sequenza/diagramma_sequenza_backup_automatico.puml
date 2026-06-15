@@ -1,7 +1,8 @@
 @startuml
-title Sequenza OOP - Backup automatico
+title Sequenza OOP - Backup e ripristino del sistema
 
-actor Tempo
+actor "Tempo" as Tempo
+actor "Amministratore" as A
 
 box "Interfaccia"
 participant "VistaSistema" as VistaSistema
@@ -14,11 +15,32 @@ database "RepositoryDatiSistema" as RepositoryDatiSistema
 participant "ServizioLog" as ServizioLog
 end box
 
+== Backup automatico (Tempo) ==
 Tempo -> VistaSistema : avviaBackup()
-VistaSistema -> ControlloreSistema : avviaBackup()
-ControlloreSistema -> ServizioSistema : eseguiBackup()
-ServizioSistema -> RepositoryDatiSistema : estraiDati()
-RepositoryDatiSistema --> ServizioSistema : datiBackup
-ServizioSistema -> ServizioLog : registraEvento("BACKUP_COMPLETATO", messaggio)
+VistaSistema -> ControlloreSistema : salvaBackup()
+ControlloreSistema -> ServizioSistema : salvaBackup()
+ServizioSistema -> RepositoryDatiSistema : salvaBackup()
+note right: Legge tutti i JSON e crea\nbackup/backup_YYYY-MM-DD_HHMMSS.json
+RepositoryDatiSistema --> ServizioSistema : percorso
+ServizioSistema -> ServizioLog : registraEvento("BACKUP_COMPLETATO", msg)
 ServizioSistema --> ControlloreSistema : risultatoBackup
+
+== Ripristino manuale (Amministratore) ==
+A -> VistaSistema : caricaBackup(percorso)
+VistaSistema -> ControlloreSistema : caricaBackup(percorso)
+ControlloreSistema -> ServizioSistema : caricaBackup(percorso)
+ServizioSistema -> RepositoryDatiSistema : caricaBackup(percorso)
+note right: Sovrascrive i 5 file JSON\ncon i dati del backup
+RepositoryDatiSistema --> ServizioSistema : ripristinoCompletato
+ServizioSistema -> ServizioLog : registraEvento("RIPRISTINO_COMPLETATO", msg)
+ServizioSistema --> ControlloreSistema : esito
+ControlloreSistema --> VistaSistema : mostraRisultato(msg)
+
+A -> VistaSistema : elencaBackup()
+VistaSistema -> ControlloreSistema : elencaBackup()
+ControlloreSistema -> ServizioSistema : elencaBackup()
+ServizioSistema -> RepositoryDatiSistema : elencaBackup()
+RepositoryDatiSistema --> ServizioSistema : listaBackup
+ServizioSistema --> ControlloreSistema : listaBackup
+ControlloreSistema --> VistaSistema : mostraBackup(lista)
 @enduml

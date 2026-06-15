@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "nome": "Mario Rossi",
+    "email": "mario@example.com",
+    "tipo": "utente"
+  },
+  {
+    "id": 2,
+    "nome": "Admin",
+    "email": "admin@example.com",
+    "tipo": "amministratore",
+    "livello_accesso": 2
+  }
+]

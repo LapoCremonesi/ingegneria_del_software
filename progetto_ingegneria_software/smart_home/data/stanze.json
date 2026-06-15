@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "nome": "Soggiorno",
+    "piano": 0
+  },
+  {
+    "id": 2,
+    "nome": "Cucina",
+    "piano": 0
+  },
+  {
+    "id": 3,
+    "nome": "Camera da letto",
+    "piano": 1
+  },
+  {
+    "id": 8588,
+    "nome": "cacca",
+    "piano": 1
+  }
+]
