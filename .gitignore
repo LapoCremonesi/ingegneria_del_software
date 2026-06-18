@@ -9,7 +9,7 @@ build/
 
 # Virtual environment
 progetto_ingegneria_software/lib/
-progetto_ingegneria_software/lib64/
+progetto_ingegneria_software/lib64
 progetto_ingegneria_software/bin/
 progetto_ingegneria_software/include/
 progetto_ingegneria_software/share/
