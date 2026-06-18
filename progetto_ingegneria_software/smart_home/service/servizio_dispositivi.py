@@ -44,7 +44,15 @@ class ServizioDispositivi:
 
     def elimina(self, id_dispositivo: str) -> bool:
         """Elimina un dispositivo dato il suo id."""
-        return self._repository_dispositivi.elimina(id_dispositivo)
+        dispositivo = self._repository_dispositivi.trova_per_id(id_dispositivo)
+        nome = dispositivo.nome if dispositivo else id_dispositivo
+        risultato = self._repository_dispositivi.elimina(id_dispositivo)
+        if risultato and self._servizio_log:
+            self._servizio_log.registra_evento(
+                "DISPOSITIVO_ELIMINATO",
+                f"Dispositivo '{nome}' eliminato",
+            )
+        return risultato
 
     def elenca(self) -> List[Dispositivo]:
         """Restituisce l'elenco di tutti i dispositivi."""

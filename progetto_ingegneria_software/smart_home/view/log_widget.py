@@ -1,5 +1,6 @@
 from typing import Optional
 
+from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QTableWidget, QTableWidgetItem,
@@ -48,7 +49,7 @@ class WidgetLog(QWidget):
             ["Timestamp", "Tipo", "Descrizione", "Dispositivo", "ID"])
         self._table.setColumnHidden(4, True)
         self._table.horizontalHeader().setSectionResizeMode(
-            2, QHeaderView.ResizeMode.Stretch)
+            QHeaderView.ResizeMode.Stretch)
         self._table.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows)
         self._table.setEditTriggers(
@@ -58,6 +59,11 @@ class WidgetLog(QWidget):
         layout.addWidget(self._table)
 
         self._filtro.returnPressed.connect(self._btn_cerca.click)
+        self._refresh()
+
+    def showEvent(self, event: QShowEvent) -> None:
+        super().showEvent(event)
+        self._refresh()
 
     def _refresh(self):
         filtro = self._filtro.text()
@@ -72,7 +78,6 @@ class WidgetLog(QWidget):
                 r, 3,
                 QTableWidgetItem(e.id_dispositivo or ""))
             self._table.setItem(r, 4, QTableWidgetItem(e.id))
-        self._table.resizeColumnsToContents()
 
     def _esporta(self):
         filtro = self._filtro.text()

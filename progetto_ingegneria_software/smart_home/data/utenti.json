@@ -1,14 +1,16 @@
 [
   {
-    "id": 1,
+    "id": "2bb42271-7987-4361-bd1b-d7c871973442",
     "nome": "Mario Rossi",
     "email": "mario@example.com",
+    "password": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
     "tipo": "utente"
   },
   {
-    "id": 2,
+    "id": "f1bf4fa8-16a2-4e9e-a31c-f754614a8dc7",
     "nome": "Admin",
     "email": "admin@example.com",
+    "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
     "tipo": "amministratore",
     "livello_accesso": 2
   }

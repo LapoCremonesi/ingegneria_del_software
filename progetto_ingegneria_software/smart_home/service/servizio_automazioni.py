@@ -32,14 +32,30 @@ class ServizioAutomazioni:
 
     def crea(self, automazione: Automazione) -> Automazione:
         self._repository_automazioni.salva(automazione)
+        if self._servizio_log:
+            self._servizio_log.registra_evento(
+                "AUTOMAZIONE_CREATA",
+                f"Automazione '{automazione.nome}' creata",
+            )
         return automazione
 
     def aggiorna(self, automazione: Automazione) -> Automazione:
         self._repository_automazioni.aggiorna(automazione)
+        if self._servizio_log:
+            self._servizio_log.registra_evento(
+                "AUTOMAZIONE_AGGIORNATA",
+                f"Automazione '{automazione.nome}' aggiornata",
+            )
         return automazione
 
     def elimina(self, id_automazione: str) -> bool:
-        return self._repository_automazioni.elimina(id_automazione)
+        risultato = self._repository_automazioni.elimina(id_automazione)
+        if risultato and self._servizio_log:
+            self._servizio_log.registra_evento(
+                "AUTOMAZIONE_ELIMINATA",
+                f"Automazione con ID '{id_automazione}' eliminata",
+            )
+        return risultato
 
     def elenca(self) -> List[Automazione]:
         return self._repository_automazioni.trova_tutti()

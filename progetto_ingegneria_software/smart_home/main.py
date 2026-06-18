@@ -6,6 +6,7 @@ Inizializza tutti i componenti (repository, servizi, controller)
 con dependency injection e avvia il menu interattivo da terminale.
 """
 
+import json
 import os
 
 from smart_home.controller.controllore_autenticazione import ControlloreAutenticazione
@@ -48,9 +49,17 @@ class SmartHomeApplication:
         self._repo_eventi = RepositoryEventiJSON()
         self._repo_dati_sistema = RepositoryDatiSistemaJSON()
 
+        percorso_eventi = os.path.join(
+            os.path.dirname(__file__), "data", "eventi.json")
+        with open(percorso_eventi, "w", encoding="utf-8") as f:
+            json.dump([], f)
+
         # ── Servizi ───────────────────────────────────────────
         self._servizio_utenti = ServizioUtenti(repository_utenti=self._repo_utenti)
-        self._servizio_stanze = ServizioStanze(repository_stanze=self._repo_stanze)
+        self._servizio_stanze = ServizioStanze(
+            repository_stanze=self._repo_stanze,
+            servizio_log=self._servizio_log,
+        )
         self._servizio_log = ServizioLog(repository_eventi=self._repo_eventi)
         self._servizio_dispositivi = ServizioDispositivi(
             repository_dispositivi=self._repo_dispositivi,
@@ -67,6 +76,7 @@ class SmartHomeApplication:
             repository_eventi=self._repo_eventi,
             repository_dati_sistema=self._repo_dati_sistema,
             servizio_log=self._servizio_log,
+            repository_automazioni=self._repo_automazioni,
         )
 
         # ── Controller ────────────────────────────────────────

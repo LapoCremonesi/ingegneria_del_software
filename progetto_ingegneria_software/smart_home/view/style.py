@@ -20,8 +20,8 @@ QTabBar::tab:hover {
 }
 
 QTabBar::tab:selected {
-    color: #2563eb;
-    border-bottom: 2px solid #2563eb;
+    background-color: #2563eb;
+    color: #ffffff;
 }
 
 QTableWidget {

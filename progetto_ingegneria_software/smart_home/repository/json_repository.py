@@ -42,9 +42,10 @@ def _to_dict(obj: Any) -> Dict[str, Any]:
     """Converte un oggetto del dominio in dizionario serializzabile."""
     if isinstance(obj, Utente):
         d: Dict[str, Any] = {
-            "id": obj.id,
+            "id": str(obj.id),
             "nome": obj.nome,
             "email": obj.email,
+            "password": obj._password_hash,
         }
         if isinstance(obj, Amministratore):
             d["tipo"] = "amministratore"
@@ -55,19 +56,19 @@ def _to_dict(obj: Any) -> Dict[str, Any]:
 
     if isinstance(obj, Stanza):
         return {
-            "id": obj.id,
+            "id": str(obj.id),
             "nome": obj.nome,
             "piano": obj.piano,
         }
 
     if isinstance(obj, Dispositivo):
         base: Dict[str, Any] = {
-            "id": obj.id,
+            "id": str(obj.id),
             "nome": obj.nome,
             "tipo": obj.tipo,
             "stato": obj.stato,
             "online": obj.online,
-            "id_stanza": obj.id_stanza,
+            "id_stanza": str(obj.id_stanza),
         }
         if isinstance(obj, Luce):
             base["intensita"] = obj.intensita
@@ -81,7 +82,7 @@ def _to_dict(obj: Any) -> Dict[str, Any]:
 
     if isinstance(obj, Regola):
         return {
-            "id": obj.id,
+            "id": str(obj.id),
             "tipo_condizione": obj.tipo_condizione,
             "valore_condizione": obj.valore_condizione,
             "azione": obj.azione,
@@ -89,22 +90,22 @@ def _to_dict(obj: Any) -> Dict[str, Any]:
 
     if isinstance(obj, Automazione):
         return {
-            "id": obj.id,
+            "id": str(obj.id),
             "nome": obj.nome,
             "attiva": obj.attiva,
             "orario": obj.orario,
-            "id_dispositivo": obj.id_dispositivo,
+            "id_dispositivo": str(obj.id_dispositivo),
             "ultima_esecuzione": obj.ultima_esecuzione,
             "regole": [_to_dict(r) for r in obj.regole],
         }
 
     if isinstance(obj, Evento):
         return {
-            "id": obj.id,
+            "id": str(obj.id),
             "timestamp": obj.timestamp.isoformat(),
             "tipo": obj.tipo,
             "descrizione": obj.descrizione,
-            "id_dispositivo": obj.id_dispositivo,
+            "id_dispositivo": str(obj.id_dispositivo) if obj.id_dispositivo else None,
         }
 
     raise TypeError(f"Tipo non supportato: {type(obj)}")
@@ -115,56 +116,60 @@ def _from_dict(cls: type, data: Dict[str, Any]) -> Any:
     if cls == Utente or cls == Amministratore:
         if data.get("tipo") == "amministratore":
             u = Amministratore(
-                id_utente=data["id"],
+                id_utente=str(data["id"]),
                 nome=data["nome"],
                 email=data["email"],
-                password="",  # la password non viene serializzata
+                password="",
                 livello_accesso=data.get("livello_accesso", 1),
             )
         else:
             u = Utente(
-                id_utente=data["id"],
+                id_utente=str(data["id"]),
                 nome=data["nome"],
                 email=data["email"],
                 password="",
             )
+        password_hash = data.get("password", "")
+        if password_hash:
+            u._password_hash = password_hash
         return u
 
     if cls == Stanza:
-        s = Stanza(id_stanza=data["id"], nome=data["nome"], piano=data["piano"])
+        s = Stanza(id_stanza=str(data["id"]), nome=data["nome"], piano=data["piano"])
         return s
 
     if cls == Dispositivo or issubclass(cls, Dispositivo):
         tipo = data.get("tipo", "")
+        id_stanza = str(data.get("id_stanza", ""))
         if tipo == "luce":
             d: Dispositivo = Luce(
-                id_dispositivo=data["id"],
+                id_dispositivo=str(data["id"]),
                 nome=data["nome"],
-                id_stanza=data["id_stanza"],
+                id_stanza=id_stanza,
                 intensita=data.get("intensita", 0),
                 colore=data.get("colore", "bianco"),
             )
         elif tipo == "termostato":
             d = Termostato(
-                id_dispositivo=data["id"],
+                id_dispositivo=str(data["id"]),
                 nome=data["nome"],
-                id_stanza=data["id_stanza"],
+                id_stanza=id_stanza,
                 temperatura_target=data.get("temperatura_target", 20.0),
                 modalita=data.get("modalita", "auto"),
             )
         elif tipo == "serratura":
             d = Serratura(
-                id_dispositivo=data["id"],
+                id_dispositivo=str(data["id"]),
                 nome=data["nome"],
-                id_stanza=data["id_stanza"],
+                id_stanza=id_stanza,
                 modalita_sicurezza=data.get("modalita_sicurezza", False),
             )
         else:
             d = Dispositivo(
-                id_dispositivo=data["id"],
+                id_dispositivo=str(data["id"]),
                 nome=data["nome"],
                 tipo=tipo,
-                id_stanza=data["id_stanza"],
+                id_stanza=id_stanza,
             )
         d._stato = data.get("stato", "spento")
         d._online = data.get("online", True)
@@ -179,9 +184,9 @@ def _from_dict(cls: type, data: Dict[str, Any]) -> Any:
 
     if cls == Automazione:
         a = Automazione(
-            id_automazione=data["id"],
+            id_automazione=str(data["id"]),
             nome=data["nome"],
-            id_dispositivo=data.get("id_dispositivo", ""),
+            id_dispositivo=str(data.get("id_dispositivo", "")),
             orario=data.get("orario"),
         )
         if data.get("attiva", False):
@@ -192,11 +197,12 @@ def _from_dict(cls: type, data: Dict[str, Any]) -> Any:
         return a
 
     if cls == Evento:
+        id_dispositivo = data.get("id_dispositivo")
         e = Evento(
-            id_evento=data["id"],
+            id_evento=str(data["id"]),
             tipo=data["tipo"],
             descrizione=data["descrizione"],
-            id_dispositivo=data.get("id_dispositivo"),
+            id_dispositivo=str(id_dispositivo) if id_dispositivo is not None else None,
         )
         if "timestamp" in data:
             e._timestamp = datetime.fromisoformat(data["timestamp"])
@@ -226,7 +232,7 @@ class _BaseJSONRepository:
 
     def _trova_indice(self, dati: List[Dict[str, Any]], id_ricerca: str) -> int:
         for i, d in enumerate(dati):
-            if d.get("id") == id_ricerca:
+            if str(d.get("id")) == str(id_ricerca):
                 return i
         return -1
 
@@ -270,7 +276,7 @@ class RepositoryStanzeJSON(_BaseJSONRepository, RepositoryStanze):
 
     def trova_per_id(self, id_stanza: str) -> Optional[Stanza]:
         for d in self._carica():
-            if d.get("id") == id_stanza:
+            if str(d.get("id")) == id_stanza:
                 return _from_dict(Stanza, d)
         return None
 
@@ -308,7 +314,7 @@ class RepositoryDispositiviJSON(_BaseJSONRepository, RepositoryDispositivi):
 
     def trova_per_id(self, id_dispositivo: str) -> Optional[Dispositivo]:
         for d in self._carica():
-            if d.get("id") == id_dispositivo:
+            if str(d.get("id")) == id_dispositivo:
                 return _from_dict(Dispositivo, d)
         return None
 
@@ -360,7 +366,7 @@ class RepositoryAutomazioniJSON(_BaseJSONRepository, RepositoryAutomazioni):
 
     def trova_per_id(self, id_automazione: str) -> Optional[Automazione]:
         for d in self._carica():
-            if d.get("id") == id_automazione:
+            if str(d.get("id")) == id_automazione:
                 return _from_dict(Automazione, d)
         return None
 

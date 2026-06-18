@@ -26,21 +26,5 @@
         "azione": "spegni"
       }
     ]
-  },
-  {
-    "id": "4c36d8a1-8d51-41f0-83be-cec17e9bf6f8",
-    "nome": "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj",
-    "attiva": true,
-    "orario": "22:29",
-    "id_dispositivo": "63c9632c-733d-4e53-b632-630c93368d24",
-    "ultima_esecuzione": "2026-06-15",
-    "regole": [
-      {
-        "id": "37446916-bf06-42d3-be47-118e19719ffa",
-        "tipo_condizione": "orario",
-        "valore_condizione": "22:29",
-        "azione": "accendi"
-      }
-    ]
   }
 ]

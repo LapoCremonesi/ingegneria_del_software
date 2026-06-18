@@ -10,6 +10,7 @@ from typing import List, Optional
 from smart_home.domain.dispositivo import Dispositivo
 from smart_home.domain.evento import Evento
 from smart_home.repository.interfaces import (
+    RepositoryAutomazioni,
     RepositoryDatiSistema,
     RepositoryDispositivi,
     RepositoryEventi,
@@ -24,12 +25,14 @@ class ServizioSistema:
                  repository_dispositivi: RepositoryDispositivi,
                  repository_eventi: RepositoryEventi,
                  repository_dati_sistema: RepositoryDatiSistema,
-                 servizio_log: Optional["ServizioLog"] = None) -> None:
+                 servizio_log: Optional["ServizioLog"] = None,
+                 repository_automazioni: Optional[RepositoryAutomazioni] = None) -> None:
         self._repository_stanze = repository_stanze
         self._repository_dispositivi = repository_dispositivi
         self._repository_eventi = repository_eventi
         self._repository_dati_sistema = repository_dati_sistema
         self._servizio_log = servizio_log
+        self._repository_automazioni = repository_automazioni
 
     def carica_riepilogo(self, id_utente: str) -> str:
         """
@@ -41,10 +44,14 @@ class ServizioSistema:
         stanze = self._repository_stanze.trova_tutti()
         dispositivi = self._repository_dispositivi.trova_tutti()
         offline = [d for d in dispositivi if not d.online]
+        automazioni = (self._repository_automazioni.trova_tutti()
+                       if self._repository_automazioni else [])
+        attive = len([a for a in automazioni if a.attiva])
 
         return (f"Dashboard utente {id_utente}\n"
                 f"Stanze: {len(stanze)}\n"
-                f"Dispositivi: {len(dispositivi)} (offline: {len(offline)})\n")
+                f"Dispositivi: {len(dispositivi)} (offline: {len(offline)})\n"
+                f"Automazioni: {len(automazioni)} (attive: {attive})\n")
 
     def monitora_dispositivi(self) -> List[Dispositivo]:
         """Restituisce tutti i dispositivi offline per il monitoraggio."""

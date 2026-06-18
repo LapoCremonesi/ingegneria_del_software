@@ -2,6 +2,7 @@ import uuid
 from typing import List, Optional
 
 from PyQt6.QtCore import QTime
+from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import (
     QComboBox, QDialog, QFormLayout, QGroupBox,
     QHBoxLayout, QHeaderView, QLabel, QLineEdit,
@@ -41,7 +42,7 @@ class WidgetAutomazioni(QWidget):
         self._tabella.setEditTriggers(
             QTableWidget.EditTrigger.NoEditTriggers)
         self._tabella.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Stretch)
+            QHeaderView.ResizeMode.Stretch)
         self._tabella.setAlternatingRowColors(True)
         self._tabella.verticalHeader().setVisible(False)
         self._tabella.setSortingEnabled(True)
@@ -72,6 +73,10 @@ class WidgetAutomazioni(QWidget):
 
         self._aggiorna()
 
+    def showEvent(self, event: QShowEvent) -> None:
+        super().showEvent(event)
+        self._aggiorna()
+
     def _aggiorna(self):
         automazioni = self._c.elenca_regole()
         self._tabella.setRowCount(len(automazioni))
@@ -86,14 +91,13 @@ class WidgetAutomazioni(QWidget):
                 QTableWidgetItem(str(len(a.regole))))
             self._tabella.setItem(r, 4, QTableWidgetItem(a.id))
             self._tabella.setItem(r, 5, QTableWidgetItem(a.id_dispositivo))
-        self._tabella.resizeColumnsToContents()
 
     def _selezionata(self) -> Optional[Automazione]:
-        righe = self._tabella.selectionModel().selectedRows()
-        if not righe:
+        r = self._tabella.currentRow()
+        if r < 0:
             return None
         return self._c.trova_regola_per_id(
-            self._tabella.item(righe[0].row(), 4).text())
+            self._tabella.item(r, 4).text())
 
     def _nuova(self):
         d = _DialogoAutomazione(self)

@@ -38,7 +38,7 @@ class WidgetStanze(QWidget):
         self._tabella.setEditTriggers(
             QTableWidget.EditTrigger.NoEditTriggers)
         self._tabella.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Stretch)
+            QHeaderView.ResizeMode.Stretch)
         self._tabella.setAlternatingRowColors(True)
         self._tabella.verticalHeader().setVisible(False)
         self._tabella.setSortingEnabled(True)
@@ -73,14 +73,13 @@ class WidgetStanze(QWidget):
             self._tabella.setItem(
                 r, 1, QTableWidgetItem(str(s.piano)))
             self._tabella.setItem(r, 2, QTableWidgetItem(s.id))
-        self._tabella.resizeColumnsToContents()
 
     def _stanza_selezionata(self) -> Optional[Stanza]:
-        righe = self._tabella.selectionModel().selectedRows()
-        if not righe:
+        r = self._tabella.currentRow()
+        if r < 0:
             return None
         return self._controllore.trova_stanza_per_id(
-            self._tabella.item(righe[0].row(), 2).text())
+            self._tabella.item(r, 2).text())
 
     def _nuova_stanza(self) -> None:
         d = _DialogoStanza(self)

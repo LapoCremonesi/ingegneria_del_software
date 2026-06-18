@@ -28,33 +28,5 @@
     "id_stanza": 2,
     "intensita": 80,
     "colore": "bianco"
-  },
-  {
-    "id": 4,
-    "nome": "Serratura ingresso",
-    "tipo": "serratura",
-    "stato": "chiusa",
-    "online": false,
-    "id_stanza": 1,
-    "modalita_sicurezza": false
-  },
-  {
-    "id": 1742,
-    "nome": "prova",
-    "tipo": "serratura",
-    "stato": "chiusa",
-    "online": true,
-    "id_stanza": 8588,
-    "modalita_sicurezza": false
-  },
-  {
-    "id": "63c9632c-733d-4e53-b632-630c93368d24",
-    "nome": "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj",
-    "tipo": "luce",
-    "stato": "acceso",
-    "online": true,
-    "id_stanza": 1,
-    "intensita": 50,
-    "colore": "bianco"
   }
 ]

@@ -1,5 +1,6 @@
 from typing import List
 
+from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import (
     QHBoxLayout, QLabel, QLineEdit, QPushButton,
     QTextEdit, QVBoxLayout, QWidget,
@@ -60,6 +61,10 @@ class WidgetDashboard(QWidget):
             for d in offline:
                 testo += f"  - {d.nome} ({d.tipo})\n"
         self._area.setPlainText(testo)
+
+    def showEvent(self, event: QShowEvent) -> None:
+        super().showEvent(event)
+        self.aggiorna()
 
     def _statistiche(self) -> None:
         filtro = self._filtro.text()

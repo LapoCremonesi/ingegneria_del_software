@@ -50,7 +50,7 @@ class WidgetDispositivi(QWidget):
         self._table.setEditTriggers(
             QTableWidget.EditTrigger.NoEditTriggers)
         self._table.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Stretch)
+            QHeaderView.ResizeMode.Stretch)
         self._table.setAlternatingRowColors(True)
         self._table.verticalHeader().setVisible(False)
         self._table.setSortingEnabled(True)
@@ -71,10 +71,6 @@ class WidgetDispositivi(QWidget):
         self._btn_elimina.setObjectName("btn_elimina")
         self._btn_elimina.clicked.connect(self._elimina)
         pulsanti.addWidget(self._btn_elimina)
-
-        self._btn_comando = QPushButton("Comando")
-        self._btn_comando.clicked.connect(self._comando)
-        pulsanti.addWidget(self._btn_comando)
 
         self._btn_automazione = QPushButton("Automazione")
         self._btn_automazione.clicked.connect(self._automazione)
@@ -109,7 +105,6 @@ class WidgetDispositivi(QWidget):
                 QTableWidgetItem(
                     "Online" if d.online else "Offline"))
             self._table.setItem(i, 5, QTableWidgetItem(d.id))
-        self._table.resizeColumnsToContents()
 
     def _selezionato(self) -> Optional[Dispositivo]:
         r = self._table.currentRow()
@@ -164,18 +159,6 @@ class WidgetDispositivi(QWidget):
             | QMessageBox.StandardButton.No,
         ) == QMessageBox.StandardButton.Yes:
             self._cd.elimina_dispositivo(disp.id)
-            self._refresh()
-
-    def _comando(self):
-        disp = self._selezionato()
-        if not disp:
-            QMessageBox.warning(
-                self, "Nessuna selezione",
-                "Seleziona un dispositivo.")
-            return
-        d = _DialogoComando(disp)
-        if d.exec() == QDialog.DialogCode.Accepted:
-            self._cd.invia_comando(disp.id, d.comando())
             self._refresh()
 
     def _automazione(self):
@@ -252,46 +235,6 @@ class _DialogoAutomazioneRapida(QDialog):
         a.attiva_automazione()
         self._ca.crea_regola(a)
         self.accept()
-
-
-class _DialogoComando(QDialog):
-
-    def __init__(self, dispositivo: Dispositivo, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle(f"Comando - {dispositivo.nome}")
-        self.setFixedSize(320, 160)
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(16, 16, 16, 16)
-        layout.setSpacing(12)
-
-        self._combo = QComboBox()
-        self._combo.addItems(["accendi", "spegni"])
-        t = dispositivo.tipo
-        if t == "luce":
-            self._combo.addItems(["attenua", "colore"])
-        elif t == "termostato":
-            self._combo.addItems(["imposta", "modalita"])
-        elif t == "serratura":
-            self._combo.addItems(
-                ["blocca", "sblocca", "sicurezza on", "sicurezza off"])
-        layout.addWidget(QLabel("Comando:"))
-        layout.addWidget(self._combo)
-
-        self._param = QLineEdit()
-        self._param.setPlaceholderText("Parametro (opzionale)...")
-        layout.addWidget(self._param)
-
-        pulsanti = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok
-            | QDialogButtonBox.StandardButton.Cancel)
-        pulsanti.accepted.connect(self.accept)
-        pulsanti.rejected.connect(self.reject)
-        layout.addWidget(pulsanti)
-
-    def comando(self) -> str:
-        c = self._combo.currentText()
-        p = self._param.text().strip()
-        return f"{c} {p}" if p else c
 
 
 class _DialogoDispositivo(QDialog):

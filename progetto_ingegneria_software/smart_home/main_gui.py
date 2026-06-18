@@ -1,3 +1,5 @@
+import json
+import os
 import sys
 
 from PyQt6.QtWidgets import QApplication, QDialog
@@ -39,14 +41,20 @@ def main() -> None:
     repo_eventi = RepositoryEventiJSON()
     repo_sistema = RepositoryDatiSistemaJSON()
 
+    percorso_eventi = os.path.join(os.path.dirname(__file__), "data", "eventi.json")
+    with open(percorso_eventi, "w", encoding="utf-8") as f:
+        json.dump([], f)
+
     servizio_log = ServizioLog(repo_eventi)
+    servizio_log.registra_evento("SISTEMA_AVVIATO", "Sistema Smart Home avviato")
     servizio_utenti = ServizioUtenti(repo_utenti)
-    servizio_stanze = ServizioStanze(repo_stanze)
+    servizio_stanze = ServizioStanze(repo_stanze, servizio_log)
     servizio_dispositivi = ServizioDispositivi(repo_dispositivi, servizio_log)
     servizio_automazioni = ServizioAutomazioni(
         repo_automazioni, servizio_dispositivi, servizio_log)
     servizio_sistema = ServizioSistema(
-        repo_stanze, repo_dispositivi, repo_eventi, repo_sistema, servizio_log)
+        repo_stanze, repo_dispositivi, repo_eventi, repo_sistema,
+        servizio_log, repository_automazioni=repo_automazioni)
 
     controllore_autenticazione = ControlloreAutenticazione(servizio_utenti)
     controllore_stanze = ControlloreStanze(servizio_stanze)
@@ -66,6 +74,11 @@ def main() -> None:
         if utente is None:
             sys.exit(0)
 
+        servizio_log.registra_evento(
+            "LOGIN_EFFETTUATO",
+            f"Utente '{utente.nome}' ha effettuato l'accesso",
+        )
+
         finestra = FinestraPrincipale(
             controllore_stanze=controllore_stanze,
             controllore_dispositivi=controllore_dispositivi,
@@ -78,10 +91,17 @@ def main() -> None:
         finestra.show()
         app.exec()
 
-        if not finestra.is_logout:
-            break
+        if finestra.is_logout:
+            servizio_log.registra_evento(
+                "LOGOUT_EFFETTUATO",
+                f"Utente '{utente.nome}' ha effettuato il logout",
+            )
+            continue
+
+        break
 
     programmatore.ferma()
+    servizio_log.registra_evento("SISTEMA_TERMINATO", "Sistema Smart Home terminato")
     sys.exit(0)
 
 
