@@ -1,30 +1,16 @@
 [
   {
-    "id": "80cbc773-5493-4f77-919e-f891969fbc54",
-    "timestamp": "2026-06-18T12:22:11.187134",
+    "id": "20a731b1-cc12-43f9-93a2-4a55997feca6",
+    "timestamp": "2026-06-19T12:49:46.169884",
     "tipo": "SISTEMA_AVVIATO",
     "descrizione": "Sistema Smart Home avviato",
     "id_dispositivo": null
   },
   {
-    "id": "d852433e-eb8d-4ecc-a012-117d151ed7a6",
-    "timestamp": "2026-06-18T12:22:18.374409",
+    "id": "a9c93453-cfb9-44f9-9cf6-9852a89abbd4",
+    "timestamp": "2026-06-19T12:49:53.572053",
     "tipo": "LOGIN_EFFETTUATO",
     "descrizione": "Utente 'Mario Rossi' ha effettuato l'accesso",
-    "id_dispositivo": null
-  },
-  {
-    "id": "a49fa8b8-3a96-4993-8822-197b1443dd3d",
-    "timestamp": "2026-06-18T12:22:26.373646",
-    "tipo": "DISPOSITIVO_ELIMINATO",
-    "descrizione": "Dispositivo 'Serratura ingresso' eliminato",
-    "id_dispositivo": null
-  },
-  {
-    "id": "4404ed1e-c085-4718-a15f-ae6c40c9ed3a",
-    "timestamp": "2026-06-18T12:22:44.081622",
-    "tipo": "LOGOUT_EFFETTUATO",
-    "descrizione": "Utente 'Mario Rossi' ha effettuato il logout",
     "id_dispositivo": null
   }
 ]
