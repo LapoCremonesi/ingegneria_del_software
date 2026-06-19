@@ -1,0 +1,22 @@
+TODO - Prossimi miglioramenti
+
+1. Aggiungere creazione di nuovi account
+   - Form di registrazione nella finestra di login
+   - Validazione campi (email, password, nome)
+   - Salvataggio nel file utenti.json
+
+2. Aggiungere eliminazione degli account
+   - Sezione gestione utenti (solo per amministratori)
+   - Conferma prima dell'eliminazione
+   - Rimozione dal file utenti.json
+
+3. Modificare la sezione backup solo per amministratore
+   - Nascondere/disabilitare il tab Backup per utenti normali
+   - Verificare il tipo di utente (Utente vs Amministratore)
+
+4. Ricontrollare bene tutto il progetto
+   - Verificare che tutte le CRUD funzionino correttamente
+   - Controllare la gestione degli errori
+   - Testare il flusso completo di login, operazioni, logout
+   - Verificare la persistenza dei dati
+   - Assicurarsi che non ci siano bug nelle viste
