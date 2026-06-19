@@ -20,13 +20,13 @@
     "modalita": "auto"
   },
   {
-    "id": 3,
+    "id": "3",
     "nome": "Luce cucina",
     "tipo": "luce",
     "stato": "acceso",
     "online": true,
-    "id_stanza": 2,
-    "intensita": 80,
+    "id_stanza": "2",
+    "intensita": 100,
     "colore": "bianco"
   }
 ]

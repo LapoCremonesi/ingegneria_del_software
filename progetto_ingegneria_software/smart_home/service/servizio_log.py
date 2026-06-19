@@ -6,7 +6,6 @@ ed esportarli in formato testuale.
 """
 
 import uuid
-from typing import List, Optional
 
 from smart_home.domain.evento import Evento
 from smart_home.repository.interfaces import RepositoryEventi
@@ -15,11 +14,11 @@ from smart_home.repository.interfaces import RepositoryEventi
 class ServizioLog:
     """Business logic per la gestione del log eventi."""
 
-    def __init__(self, repository_eventi: RepositoryEventi) -> None:
+    def __init__(self, repository_eventi):
         self._repository_eventi = repository_eventi
 
-    def registra_evento(self, tipo: str, messaggio: str,
-                        id_dispositivo: Optional[str] = None) -> Evento:
+    def registra_evento(self, tipo, messaggio,
+                        id_dispositivo=None):
         """
         Crea un nuovo evento e lo salva nel repository.
 
@@ -34,11 +33,11 @@ class ServizioLog:
         self._repository_eventi.salva(evento)
         return evento
 
-    def elenca_eventi(self, filtro: str) -> List[Evento]:
+    def elenca_eventi(self, filtro):
         """Cerca eventi applicando un filtro testuale."""
         return self._repository_eventi.cerca(filtro)
 
-    def esporta_eventi(self, filtro: str) -> str:
+    def esporta_eventi(self, filtro):
         """Cerca eventi per filtro e li restituisce come stringa formattata."""
         eventi = self.elenca_eventi(filtro)
         righe = [e.to_string() for e in eventi]

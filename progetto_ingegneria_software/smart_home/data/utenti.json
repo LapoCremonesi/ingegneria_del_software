@@ -13,5 +13,12 @@
     "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
     "tipo": "amministratore",
     "livello_accesso": 2
+  },
+  {
+    "id": "ce9598ec-2aaf-4199-aabb-96aad55e72de",
+    "nome": "prova",
+    "email": "prova@prova.com",
+    "password": "fcb292e33b4205662b4cae13104c5ce4b1e49f400356ad38dba0045131e7ea82",
+    "tipo": "utente"
   }
 ]

@@ -1,148 +1,183 @@
 @startuml
 title Diagramma Classi Applicative - Versione Semplificata
 
-' ==================== VISTE ====================
-class VistaLogin {
-  +inserisciCredenziali(email: String, password: String)
-  +mostraErroreLogin()
+' ==================== VISTE (Widget) ====================
+class LoginDialog {
+  +inserisci_credenziali(email: str, password: str)
+  +mostra_errore_login()
 }
 
-class VistaStanze {
-  +creaStanza(nome: String, piano: int)
-  +aggiornaStanza(stanza: Stanza)
-  +eliminaStanza(idStanza: int)
-  +elencaStanze()
-  +mostraRisultatoStanza(stanza: Stanza)
+class WidgetStanze {
+  +crea_stanza(nome: str, piano: int)
+  +aggiorna_stanza(stanza: Stanza)
+  +elimina_stanza(id_stanza: str)
+  +elenca_stanze()
+  +mostra_risultato_stanza(stanza: Stanza)
 }
 
-class VistaDispositivi {
-  +creaDispositivo(nome: String, tipo: String, idStanza: int)
-  +aggiornaDispositivo(dispositivo: Dispositivo)
-  +eliminaDispositivo(idDispositivo: int)
-  +elencaDispositivi()
-  +inviaComando(idDispositivo: int, comando: String)
-  +mostraRisultatoComando(stato: Dispositivo)
+class WidgetDispositivi {
+  +crea_dispositivo(nome: str, tipo: str, id_stanza: str)
+  +aggiorna_dispositivo(dispositivo: Dispositivo)
+  +elimina_dispositivo(id_dispositivo: str)
+  +elenca_dispositivi()
+  +invia_comando(id_dispositivo: str, comando: str)
+  +mostra_risultato_comando(stato: Dispositivo)
 }
 
-class VistaAutomazioni {
-  +creaRegola(regola: RegolaAutomazione)
-  +aggiornaRegola(regola: RegolaAutomazione)
-  +eliminaRegola(idRegola: int)
-  +elencaRegole()
-  +mostraRisultatoOperazione()
+class WidgetAutomazioni {
+  +crea_regola(automazione: Automazione)
+  +aggiorna_regola(automazione: Automazione)
+  +elimina_regola(id_automazione: str)
+  +elenca_regole()
+  +mostra_risultato_operazione()
 }
 
-class VistaLog {
-  +cercaEventi(filtro: String)
-  +mostraEventi(eventi: List<Evento>)
-  +mostraRisultatoEsportazione(percorsoFile: String)
+class WidgetLog {
+  +cerca_eventi(filtro: str)
+  +mostra_eventi(eventi: list)
+  +esporta_eventi(filtro: str)
 }
 
-class VistaSistema {
-  +mostraDashboard(dati: String)
-  +mostraMonitoraggio(dispositivi: List<Dispositivo>)
-  +mostraStatistiche(eventi: List<Evento>)
-  +salvaBackup()
-  +mostraBackupDisponibili(backup: List<String>)
-  +caricaBackup(percorso: String)
+class WidgetDashboard {
+  +mostra_dashboard(dati: str)
+  +mostra_monitoraggio(dispositivi: list)
+  +mostra_statistiche(eventi: list)
+}
+
+class WidgetBackup {
+  +salva_backup()
+  +mostra_backup_disponibili(backup: list)
+  +carica_backup(percorso: str)
+  +elimina_backup(percorso: str)
+}
+
+class WidgetUtenti {
+  +elenca_utenti()
+  +elimina_utente(id_utente: str)
+}
+
+class FinestraPrincipale {
+  +aggiorna_dashboard()
 }
 
 ' ==================== CONTROLLORI ====================
 class ControlloreAutenticazione {
-  +effettuaLogin(email: String, password: String): Utente
+  +effettua_login(email: str, password: str): Utente
+  +registra_utente(nome: str, email: str, password: str): Utente
+  +elenca_utenti(): list
+  +elimina_utente(id_utente: str): bool
 }
 
 class ControlloreStanze {
-  +creaStanza(nome: String, piano: int): Stanza
-  +aggiornaStanza(stanza: Stanza): Stanza
-  +eliminaStanza(idStanza: int): bool
-  +elencaStanze(): List<Stanza>
-  +trovaStanzaPerId(id: int): Stanza
+  +crea_stanza(nome: str, piano: int): Stanza
+  +aggiorna_stanza(stanza: Stanza): Stanza
+  +elimina_stanza(id_stanza: str): bool
+  +elenca_stanze(): list
+  +trova_stanza_per_id(id_stanza: str): Stanza
 }
 
 class ControlloreDispositivi {
-  +creaDispositivo(nome: String, tipo: String, idStanza: int): Dispositivo
-  +aggiornaDispositivo(dispositivo: Dispositivo): Dispositivo
-  +eliminaDispositivo(idDispositivo: int): bool
-  +elencaDispositivi(): List<Dispositivo>
-  +trovaDispositivoPerId(id: int): Dispositivo
-  +inviaComando(idDispositivo: int, comando: String): Dispositivo
+  +crea_dispositivo(nome: str, tipo: str, id_stanza: str): Dispositivo
+  +aggiorna_dispositivo(dispositivo: Dispositivo): Dispositivo
+  +elimina_dispositivo(id_dispositivo: str): bool
+  +elenca_dispositivi(): list
+  +trova_dispositivo_per_id(id_dispositivo: str): Dispositivo
+  +invia_comando(id_dispositivo: str, comando: str): Dispositivo
 }
 
 class ControlloreAutomazioni {
-  +creaRegola(regola: RegolaAutomazione): RegolaAutomazione
-  +aggiornaRegola(regola: RegolaAutomazione): RegolaAutomazione
-  +eliminaRegola(idRegola: int): bool
-  +elencaRegole(): List<RegolaAutomazione>
-  +trovaRegolaPerId(id: int): RegolaAutomazione
+  +crea_regola(automazione: Automazione): Automazione
+  +aggiorna_regola(automazione: Automazione): Automazione
+  +elimina_regola(id_automazione: str): bool
+  +elenca_regole(): list
+  +trova_regola_per_id(id_automazione: str): Automazione
 }
 
 class ControlloreLog {
-  +elencaEventi(filtro: String): List<Evento>
-  +esportaEventi(filtro: String): String
+  +elenca_eventi(filtro: str): list
+  +esporta_eventi(filtro: str): str
 }
 
 class ControlloreSistema {
-  +apriDashboard(idUtente: int)
-  +monitoraDispositivi(): List<Dispositivo>
-  +generaStatistiche(filtro: String): List<Evento>
-  +salvaBackup(): String
-  +elencaBackup(): List<String>
-  +caricaBackup(percorso: String): String
+  +apri_dashboard(id_utente: str): str
+  +monitora_dispositivi(): list
+  +genera_statistiche(filtro: str): list
+  +esegui_automazioni(): list
+  +salva_backup(): str
+  +elenca_backup(): list
+  +carica_backup(percorso: str): str
+  +elimina_backup(percorso: str): bool
 }
 
 ' ==================== SERVIZI ====================
 class ServizioUtenti {
-  +autentica(email: String, password: String): Utente
+  +autentica(email: str, password: str): Utente
+  +crea_utente(nome: str, email: str, password: str): Utente
+  +elenca_utenti(): list
+  +elimina_utente(id_utente: str): bool
 }
 
 class ServizioStanze {
   +crea(stanza: Stanza): Stanza
   +aggiorna(stanza: Stanza): Stanza
-  +elimina(idStanza: int): bool
-  +elenca(): List<Stanza>
-  +trovaPerId(id: int): Stanza
+  +elimina(id_stanza: str): bool
+  +elenca(): list
+  +trova_per_id(id_stanza: str): Stanza
 }
 
 class ServizioDispositivi {
   +crea(dispositivo: Dispositivo): Dispositivo
   +aggiorna(dispositivo: Dispositivo): Dispositivo
-  +elimina(idDispositivo: int): bool
-  +elenca(): List<Dispositivo>
-  +trovaPerId(id: int): Dispositivo
-  +inviaComando(idDispositivo: int, comando: String): Dispositivo
+  +elimina(id_dispositivo: str): bool
+  +elenca(): list
+  +trova_per_id(id_dispositivo: str): Dispositivo
+  +invia_comando(id_dispositivo: str, comando: str): Dispositivo
 }
 
 class ServizioAutomazioni {
-  +crea(regola: RegolaAutomazione): RegolaAutomazione
-  +aggiorna(regola: RegolaAutomazione): RegolaAutomazione
-  +elimina(idRegola: int): bool
-  +elenca(): List<RegolaAutomazione>
-  +trovaPerId(id: int): RegolaAutomazione
+  +crea(automazione: Automazione): Automazione
+  +aggiorna(automazione: Automazione): Automazione
+  +elimina(id_automazione: str): bool
+  +elenca(): list
+  +trova_per_id(id_automazione: str): Automazione
+  +elenca_attive(): list
+  +elenca_per_dispositivo(id_dispositivo: str): list
+  +esegui_automazione(automazione: Automazione): bool
+  +esegui_tutte(): list
+}
+
+class ProgrammatoreAutomazioni {
+  +automazioni_eseguite: pyqtSignal
+  +avvia(): void
+  +ferma(): void
 }
 
 class ServizioLog {
-  +elencaEventi(filtro: String): List<Evento>
-  +esportaEventi(filtro: String): String
-  +registraEvento(tipo: String, messaggio: String)
+  +registra_evento(tipo: str, messaggio: str): Evento
+  +elenca_eventi(filtro: str): list
+  +esporta_eventi(filtro: str): str
 }
 
 class ServizioSistema {
-  +caricaRiepilogo(idUtente: int): String
-  +monitoraDispositivi(): List<Dispositivo>
-  +generaStatistiche(filtro: String): List<Evento>
-  +salvaBackup(): String
-  +elencaBackup(): List<String>
-  +caricaBackup(percorso: String): String
+  +carica_riepilogo(id_utente: str): str
+  +monitora_dispositivi(): list
+  +genera_statistiche(filtro: str): list
+  +esegui_automazioni_ora(): list
+  +salva_backup(): str
+  +elenca_backup(): list
+  +carica_backup(percorso: str): str
+  +elimina_backup(percorso: str): bool
 }
 
 ' ==================== RELAZIONI ====================
-VistaLogin --> ControlloreAutenticazione
-VistaStanze --> ControlloreStanze
-VistaDispositivi --> ControlloreDispositivi
-VistaAutomazioni --> ControlloreAutomazioni
-VistaLog --> ControlloreLog
-VistaSistema --> ControlloreSistema
+LoginDialog --> ControlloreAutenticazione
+WidgetStanze --> ControlloreStanze
+WidgetDispositivi --> ControlloreDispositivi
+WidgetAutomazioni --> ControlloreAutomazioni
+WidgetLog --> ControlloreLog
+WidgetDashboard --> ControlloreSistema
+WidgetBackup --> ControlloreSistema
+WidgetUtenti --> ControlloreAutenticazione
 
 ControlloreAutenticazione --> ServizioUtenti
 ControlloreStanze --> ServizioStanze
@@ -151,9 +186,13 @@ ControlloreAutomazioni --> ServizioAutomazioni
 ControlloreLog --> ServizioLog
 ControlloreSistema --> ServizioSistema
 
+ProgrammatoreAutomazioni --> ServizioAutomazioni
+ProgrammatoreAutomazioni ..> FinestraPrincipale : segnale automazioni_eseguite
+
+ServizioStanze --> ServizioLog
 ServizioDispositivi --> ServizioLog
 ServizioAutomazioni --> ServizioDispositivi
-ServizioSistema --> ServizioDispositivi
+ServizioAutomazioni --> ServizioLog
 ServizioSistema --> ServizioLog
-ServizioSistema --> ServizioStanze
+ServizioSistema --> ServizioAutomazioni
 @enduml

@@ -5,17 +5,17 @@
   :Aprire gestione stanze;
   if (Operazione?) then (Nuova stanza)
     :Inserire dati stanza;
-    :Salvare stanza;
+    :Salvare stanza su repository;
+    :Registrare evento STANZA_CREATA;
   elseif (Modifica stanza)
     :Selezionare stanza;
     :Aggiornare dati;
-    :Salvare modifiche;
+    :Salvare modifiche su repository;
   else (Rimozione stanza)
     :Selezionare stanza;
     :Confermare rimozione;
-    :Eliminare stanza;
+    :Eliminare stanza da repository;
   endif
   :Aggiornare elenco stanze;
   stop
-
 @enduml

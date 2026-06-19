@@ -1,10 +1,10 @@
 @startuml
-  title Diagramma Attivita - Backup e ripristino (Sistema / Amministratore)
+  title Diagramma Attivita - Backup e ripristino (Amministratore)
 
   start
   :Scegliere operazione;
   if (Tipo operazione?) then (Backup)
-    :Avviare backup (manuale o schedulato);
+    :Avviare backup;
     :Raccogliere dati da tutti i file JSON;
     :Creare file unificato backup/backup_*.json;
     if (Salvataggio riuscito?) then (Si)
@@ -25,6 +25,11 @@
     else (No)
       :Registrare errore ripristino;
     endif
+  else (Elimina backup)
+    :Selezionare backup da eliminare;
+    :Confermare eliminazione;
+    :Eliminare file backup;
+    :Registrare evento BACKUP_ELIMINATO;
   else (Visualizza elenco)
     :Scansionare cartella backup/;
     :Mostrare lista backup disponibili;

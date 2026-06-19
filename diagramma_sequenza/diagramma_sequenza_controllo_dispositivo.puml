@@ -5,7 +5,7 @@ actor Utente
 actor Amministratore
 
 box "Interfaccia"
-participant "VistaDispositivi" as VistaDispositivi
+participant "WidgetDispositivi" as WidgetDispositivi
 end box
 
 box "Logica applicativa"
@@ -13,22 +13,32 @@ participant "ControlloreDispositivi" as ControlloreDispositivi
 participant "ServizioDispositivi" as ServizioDispositivi
 participant "Dispositivo" as Dispositivo
 participant "ServizioLog" as ServizioLog
+database "RepositoryDispositivi" as RepositoryDispositivi
 end box
 
-Utente -> VistaDispositivi : inviaComando(idDispositivo, comando)
-Amministratore -> VistaDispositivi : inviaComando(idDispositivo, comando)
-VistaDispositivi -> ControlloreDispositivi : inviaComando(idDispositivo, comando)
-ControlloreDispositivi -> ServizioDispositivi : inviaComando(idDispositivo, comando)
-ServizioDispositivi -> Dispositivo : applicaComando(comando)
-Dispositivo --> ServizioDispositivi : dispositivoAggiornato
+Utente -> WidgetDispositivi : invia_comando(id_dispositivo, comando)
+Amministratore -> WidgetDispositivi : invia_comando(id_dispositivo, comando)
+WidgetDispositivi -> ControlloreDispositivi : invia_comando(id_dispositivo, comando)
+ControlloreDispositivi -> ServizioDispositivi : invia_comando(id_dispositivo, comando)
+ServizioDispositivi -> RepositoryDispositivi : trova_per_id(id_dispositivo)
+RepositoryDispositivi --> ServizioDispositivi : dispositivo
 
-alt esito positivo
-  ServizioDispositivi -> ServizioLog : registraEvento("COMANDO_ESEGUITO", messaggio)
-  ServizioDispositivi --> ControlloreDispositivi : dispositivoAggiornato
-  ControlloreDispositivi --> VistaDispositivi : mostraRisultatoComando(stato)
-else esito negativo
-  ServizioDispositivi -> ServizioLog : registraEvento("COMANDO_FALLITO", messaggio)
-  ServizioDispositivi --> ControlloreDispositivi : erroreOperazione
-  ControlloreDispositivi --> VistaDispositivi : mostraRisultatoComando(errore)
+alt dispositivo trovato
+  ServizioDispositivi -> Dispositivo : applica_comando(comando)
+  Dispositivo --> ServizioDispositivi : esito
+
+  alt esito positivo
+    ServizioDispositivi -> RepositoryDispositivi : aggiorna(dispositivo)
+    ServizioDispositivi -> ServizioLog : registra_evento("COMANDO_ESEGUITO", msg)
+    ServizioDispositivi --> ControlloreDispositivi : dispositivo_aggiornato
+    ControlloreDispositivi --> WidgetDispositivi : mostra_risultato_comando(stato)
+  else esito negativo
+    ServizioDispositivi -> ServizioLog : registra_evento("COMANDO_FALLITO", msg)
+    ServizioDispositivi --> ControlloreDispositivi : None
+    ControlloreDispositivi --> WidgetDispositivi : errore
+  end
+else dispositivo non trovato
+  ServizioDispositivi --> ControlloreDispositivi : None
+  ControlloreDispositivi --> WidgetDispositivi : errore
 end
 @enduml

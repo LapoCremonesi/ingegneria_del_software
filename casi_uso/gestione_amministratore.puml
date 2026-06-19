@@ -13,6 +13,7 @@ rectangle "Funzionalità Amministratore" {
   usecase "Consultazione storico eventi" as UC6
   usecase "Gestione backup e ripristino" as UC7
   usecase "Monitoraggio e statistiche" as UC8
+  usecase "Eliminazione backup" as UC9
   usecase "Registrazione eventi di sistema" as UCE1
 }
 
@@ -21,16 +22,18 @@ A --> UC2
 A --> UC3
 A --> UC4
 A --> UC5
-A --> UC6 
+A --> UC6
 A --> UC7
 A --> UC8
+A --> UC9
 
-T --> UC7
 T --> UC5
+T --> UC7
 
 UC4 ..> UCE1 : <<include>>
 UC5 ..> UCE1 : <<include>>
 UC7 ..> UCE1 : <<include>>
 UC8 ..> UCE1 : <<include>>
+UC9 ..> UCE1 : <<include>>
 
 @enduml

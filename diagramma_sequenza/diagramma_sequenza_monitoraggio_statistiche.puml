@@ -5,7 +5,7 @@ actor Utente
 actor Amministratore
 
 box "Interfaccia"
-participant "VistaSistema" as VistaSistema
+participant "WidgetDashboard" as WidgetDashboard
 end box
 
 box "Logica applicativa"
@@ -15,21 +15,21 @@ database "RepositoryDispositivi" as RepositoryDispositivi
 database "RepositoryEventi" as RepositoryEventi
 end box
 
-Utente -> VistaSistema : monitoraDispositivi()
-Amministratore -> VistaSistema : monitoraDispositivi()
-VistaSistema -> ControlloreSistema : monitoraDispositivi()
-ControlloreSistema -> ServizioSistema : monitoraDispositivi()
-ServizioSistema -> RepositoryDispositivi : trovaOffline()
-RepositoryDispositivi --> ServizioSistema : dispositiviOffline
-ServizioSistema --> ControlloreSistema : dispositiviOffline
-ControlloreSistema --> VistaSistema : mostraMonitoraggio(dispositiviOffline)
+Utente -> WidgetDashboard : monitora_dispositivi()
+Amministratore -> WidgetDashboard : monitora_dispositivi()
+WidgetDashboard -> ControlloreSistema : monitora_dispositivi()
+ControlloreSistema -> ServizioSistema : monitora_dispositivi()
+ServizioSistema -> RepositoryDispositivi : trova_offline()
+RepositoryDispositivi --> ServizioSistema : dispositivi_offline
+ServizioSistema --> ControlloreSistema : dispositivi_offline
+ControlloreSistema --> WidgetDashboard : mostra_monitoraggio(dispositivi_offline)
 
-Utente -> VistaSistema : generaStatistiche(filtro)
-Amministratore -> VistaSistema : generaStatistiche(filtro)
-VistaSistema -> ControlloreSistema : generaStatistiche(filtro)
-ControlloreSistema -> ServizioSistema : generaStatistiche(filtro)
+Utente -> WidgetDashboard : genera_statistiche(filtro)
+Amministratore -> WidgetDashboard : genera_statistiche(filtro)
+WidgetDashboard -> ControlloreSistema : genera_statistiche(filtro)
+ControlloreSistema -> ServizioSistema : genera_statistiche(filtro)
 ServizioSistema -> RepositoryEventi : cerca(filtro)
-RepositoryEventi --> ServizioSistema : elencoEventi
-ServizioSistema --> ControlloreSistema : elencoEventi
-ControlloreSistema --> VistaSistema : mostraStatistiche(elencoEventi)
+RepositoryEventi --> ServizioSistema : elenco_eventi
+ServizioSistema --> ControlloreSistema : elenco_eventi
+ControlloreSistema --> WidgetDashboard : mostra_statistiche(elenco_eventi)
 @enduml

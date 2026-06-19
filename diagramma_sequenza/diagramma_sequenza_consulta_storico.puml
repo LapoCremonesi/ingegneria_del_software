@@ -1,10 +1,11 @@
 @startuml
-title Sequenza OOP - Consultazione storico eventi (solo Amministratore)
+title Sequenza OOP - Consultazione storico eventi
 
+actor Utente
 actor Amministratore
 
 box "Interfaccia"
-participant "VistaLog" as VistaLog
+participant "WidgetLog" as WidgetLog
 end box
 
 box "Logica applicativa"
@@ -13,19 +14,21 @@ participant "ServizioLog" as ServizioLog
 database "RepositoryEventi" as RepositoryEventi
 end box
 
-Amministratore -> VistaLog : cercaEventi(filtro)
-VistaLog -> ControlloreLog : elencaEventi(filtro)
-ControlloreLog -> ServizioLog : elencaEventi(filtro)
+Utente -> WidgetLog : cerca_eventi(filtro)
+Amministratore -> WidgetLog : cerca_eventi(filtro)
+WidgetLog -> ControlloreLog : elenca_eventi(filtro)
+ControlloreLog -> ServizioLog : elenca_eventi(filtro)
 ServizioLog -> RepositoryEventi : cerca(filtro)
 RepositoryEventi --> ServizioLog : eventi
 ServizioLog --> ControlloreLog : eventi
-ControlloreLog --> VistaLog : mostraEventi(eventi)
+ControlloreLog --> WidgetLog : mostra_eventi(eventi)
 
 opt esportazione
-  Amministratore -> VistaLog : esportaEventi(filtro)
-  VistaLog -> ControlloreLog : esportaEventi(filtro)
-  ControlloreLog -> ServizioLog : esportaEventi(filtro)
-  ServizioLog --> ControlloreLog : fileEsportato
-  ControlloreLog --> VistaLog : mostraRisultatoEsportazione(fileEsportato)
+  Utente -> WidgetLog : esporta_eventi(filtro)
+  Amministratore -> WidgetLog : esporta_eventi(filtro)
+  WidgetLog -> ControlloreLog : esporta_eventi(filtro)
+  ControlloreLog -> ServizioLog : esporta_eventi(filtro)
+  ServizioLog --> ControlloreLog : file_esportato
+  ControlloreLog --> WidgetLog : mostra_risultato_esportazione(file_esportato)
 end
 @enduml

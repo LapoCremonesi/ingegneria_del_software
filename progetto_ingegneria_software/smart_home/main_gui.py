@@ -30,7 +30,7 @@ from smart_home.view.main_window import FinestraPrincipale
 from smart_home.view.style import STILE_GLOBALE
 
 
-def main() -> None:
+def main():
     app = QApplication(sys.argv)
     app.setStyleSheet(STILE_GLOBALE)
 
@@ -54,7 +54,8 @@ def main() -> None:
         repo_automazioni, servizio_dispositivi, servizio_log)
     servizio_sistema = ServizioSistema(
         repo_stanze, repo_dispositivi, repo_eventi, repo_sistema,
-        servizio_log, repository_automazioni=repo_automazioni)
+        servizio_log, repository_automazioni=repo_automazioni,
+        servizio_automazioni=servizio_automazioni)
 
     controllore_autenticazione = ControlloreAutenticazione(servizio_utenti)
     controllore_stanze = ControlloreStanze(servizio_stanze)
@@ -85,8 +86,12 @@ def main() -> None:
             controllore_automazioni=controllore_automazioni,
             controllore_log=controllore_log,
             controllore_sistema=controllore_sistema,
+            controllore_autenticazione=controllore_autenticazione,
             id_utente=utente.id,
+            utente=utente,
         )
+        programmatore.automazioni_eseguite.connect(
+            finestra.aggiorna_dashboard)
         programmatore.avvia()
         finestra.show()
         app.exec()

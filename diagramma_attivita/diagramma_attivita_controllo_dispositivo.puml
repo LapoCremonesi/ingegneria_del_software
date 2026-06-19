@@ -3,16 +3,16 @@
 
   start
     :Selezionare dispositivo;
-    :Selezionare comando;
+    :Selezionare comando (accendi/spegni/attenua/...);
     :Inviare comando al sistema;
   if (Dispositivo raggiungibile?) then (Si)
-    :Eseguire comando;
-    :Aggiornare stato dispositivo;
-    :Registrare evento;
+    :Eseguire comando sul dispositivo;
+    :Aggiornare stato su repository;
+    :Registrare evento COMANDO_ESEGUITO;
     :Mostrare conferma;
   else (No)
     :Mostrare errore dispositivo offline;
-    :Registrare errore;
+    :Registrare evento COMANDO_FALLITO;
   endif
   stop
 @enduml

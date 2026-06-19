@@ -5,8 +5,8 @@ actor Utente
 actor Amministratore
 
 box "Interfaccia"
-participant "VistaStanze" as VistaStanze
-participant "VistaDispositivi" as VistaDispositivi
+participant "WidgetStanze" as WidgetStanze
+participant "WidgetDispositivi" as WidgetDispositivi
 end box
 
 box "Logica applicativa"
@@ -14,25 +14,29 @@ participant "ControlloreStanze" as ControlloreStanze
 participant "ControlloreDispositivi" as ControlloreDispositivi
 participant "ServizioStanze" as ServizioStanze
 participant "ServizioDispositivi" as ServizioDispositivi
+participant "ServizioLog" as ServizioLog
 database "RepositoryStanze" as RepositoryStanze
 database "RepositoryDispositivi" as RepositoryDispositivi
 end box
 
-Utente -> VistaStanze : creaStanza(nome, piano)
-VistaStanze -> ControlloreStanze : creaStanza(nome, piano)
+Utente -> WidgetStanze : crea_stanza(nome, piano)
+Amministratore -> WidgetStanze : crea_stanza(nome, piano)
+WidgetStanze -> ControlloreStanze : crea_stanza(nome, piano)
 ControlloreStanze -> ServizioStanze : crea(stanza)
 ServizioStanze -> RepositoryStanze : salva(stanza)
-RepositoryStanze --> ServizioStanze : stanzaSalvata
-ServizioStanze --> ControlloreStanze : stanzaCreata
-ControlloreStanze --> VistaStanze : mostraRisultatoStanza(stanzaCreata)
+RepositoryStanze --> ServizioStanze : stanza_salvata
+ServizioStanze -> ServizioLog : registra_evento("STANZA_CREATA", msg)
+ServizioStanze --> ControlloreStanze : stanza_creata
+ControlloreStanze --> WidgetStanze : mostra_risultato_stanza(stanza_creata)
 
 == Crea dispositivo ==
-Utente -> VistaDispositivi : creaDispositivo(nome, tipo, idStanza)
-VistaDispositivi -> ControlloreDispositivi : creaDispositivo(nome, tipo, idStanza)
-ControlloreDispositivi -> ServizioDispositivi : creaDispositivo(nome, tipo, idStanza)
+Utente -> WidgetDispositivi : crea_dispositivo(nome, tipo, id_stanza)
+Amministratore -> WidgetDispositivi : crea_dispositivo(nome, tipo, id_stanza)
+WidgetDispositivi -> ControlloreDispositivi : crea_dispositivo(nome, tipo, id_stanza)
+ControlloreDispositivi -> ServizioDispositivi : crea(dispositivo)
 ServizioDispositivi -> RepositoryDispositivi : salva(dispositivo)
-RepositoryDispositivi --> ServizioDispositivi : dispositivoSalvato
-ServizioDispositivi --> ControlloreDispositivi : dispositivoCreato
-ControlloreDispositivi --> VistaDispositivi : mostraRisultatoComando(dispositivoCreato)
-
+RepositoryDispositivi --> ServizioDispositivi : dispositivo_salvato
+ServizioDispositivi -> ServizioLog : registra_evento("DISPOSITIVO_CREATO", msg)
+ServizioDispositivi --> ControlloreDispositivi : dispositivo_creato
+ControlloreDispositivi --> WidgetDispositivi : mostra_risultato_comando(dispositivo_creato)
 @enduml

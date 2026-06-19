@@ -1,5 +1,4 @@
 import uuid
-from typing import Optional
 
 from PyQt6.QtCore import QTime, Qt
 from PyQt6.QtWidgets import (
@@ -106,7 +105,7 @@ class WidgetDispositivi(QWidget):
                     "Online" if d.online else "Offline"))
             self._table.setItem(i, 5, QTableWidgetItem(d.id))
 
-    def _selezionato(self) -> Optional[Dispositivo]:
+    def _selezionato(self):
         r = self._table.currentRow()
         if r < 0:
             return None
@@ -239,8 +238,7 @@ class _DialogoAutomazioneRapida(QDialog):
 
 class _DialogoDispositivo(QDialog):
 
-    def __init__(self, controllore_stanze: ControlloreStanze,
-                 dispositivo: Optional[Dispositivo] = None, parent=None):
+    def __init__(self, controllore_stanze, dispositivo=None, parent=None):
         super().__init__(parent)
         self._cs = controllore_stanze
         self._dispositivo = dispositivo

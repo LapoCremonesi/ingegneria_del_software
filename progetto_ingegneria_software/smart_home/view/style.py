@@ -81,6 +81,37 @@ QPushButton#btn_annulla:hover {
     background-color: #fafafa;
 }
 
+QPushButton#tab_active {
+    background-color: transparent;
+    color: #2563eb;
+    border: none;
+    border-bottom: 2px solid #2563eb;
+    border-radius: 0;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+QPushButton#tab_active:hover {
+    color: #1d4ed8;
+    border-bottom: 2px solid #1d4ed8;
+}
+
+QPushButton#tab_inactive {
+    background-color: transparent;
+    color: #888888;
+    border: none;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+QPushButton#tab_inactive:hover {
+    color: #555555;
+    border-bottom: 2px solid #cccccc;
+}
+
 QPushButton#btn_esci {
     background-color: #ffffff;
     color: #666666;

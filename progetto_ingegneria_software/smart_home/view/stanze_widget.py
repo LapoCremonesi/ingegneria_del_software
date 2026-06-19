@@ -1,5 +1,3 @@
-from typing import Optional
-
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QDialog, QFormLayout, QHBoxLayout, QHeaderView,
@@ -14,8 +12,7 @@ from smart_home.domain.stanza import Stanza
 
 class WidgetStanze(QWidget):
 
-    def __init__(self, controllore_stanze: ControlloreStanze,
-                 parent: Optional[QWidget] = None) -> None:
+    def __init__(self, controllore_stanze, parent=None):
         super().__init__(parent)
         self._controllore = controllore_stanze
         layout = QVBoxLayout(self)
@@ -65,7 +62,7 @@ class WidgetStanze(QWidget):
 
         self._aggiorna_tabella()
 
-    def _aggiorna_tabella(self) -> None:
+    def _aggiorna_tabella(self):
         stanze = self._controllore.elenca_stanze()
         self._tabella.setRowCount(len(stanze))
         for r, s in enumerate(stanze):
@@ -74,21 +71,21 @@ class WidgetStanze(QWidget):
                 r, 1, QTableWidgetItem(str(s.piano)))
             self._tabella.setItem(r, 2, QTableWidgetItem(s.id))
 
-    def _stanza_selezionata(self) -> Optional[Stanza]:
+    def _stanza_selezionata(self):
         r = self._tabella.currentRow()
         if r < 0:
             return None
         return self._controllore.trova_stanza_per_id(
             self._tabella.item(r, 2).text())
 
-    def _nuova_stanza(self) -> None:
+    def _nuova_stanza(self):
         d = _DialogoStanza(self)
         if d.exec() == QDialog.DialogCode.Accepted:
             nome, piano = d.dati()
             self._controllore.crea_stanza(nome, piano)
             self._aggiorna_tabella()
 
-    def _modifica_stanza(self) -> None:
+    def _modifica_stanza(self):
         s = self._stanza_selezionata()
         if not s:
             QMessageBox.warning(
@@ -101,7 +98,7 @@ class WidgetStanze(QWidget):
             self._controllore.aggiorna_stanza(s)
             self._aggiorna_tabella()
 
-    def _elimina_stanza(self) -> None:
+    def _elimina_stanza(self):
         s = self._stanza_selezionata()
         if not s:
             QMessageBox.warning(
@@ -120,8 +117,7 @@ class WidgetStanze(QWidget):
 
 class _DialogoStanza(QDialog):
 
-    def __init__(self, parent: Optional[QWidget] = None,
-                 stanza: Optional[Stanza] = None) -> None:
+    def __init__(self, parent=None, stanza=None):
         super().__init__(parent)
         self._stanza = stanza
         self.setWindowTitle(

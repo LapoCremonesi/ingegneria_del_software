@@ -7,56 +7,54 @@ skinparam defaultFontSize 11
 
 package "Gestione Servizi" as PktServizio <<Service>> {
   class Stanza {
-    + id: int
-    + nome: String
+    + id: str
+    + nome: str
     + piano: int
-    + dispositivi: List<Dispositivo>
-    + __init__(id: int, nome: String, piano: int)
+    + dispositivi: list
     + aggiungi_dispositivo(dispositivo: Dispositivo): void
-    + rimuovi_dispositivo(id_dispositivo: int): Boolean
-    + elenca_dispositivi(): List<Dispositivo>
-    + get_dispositivi_per_tipo(tipo: String): List<Dispositivo>
-    + get_nome(): String
-    + get_piano(): int
+    + rimuovi_dispositivo(id_dispositivo: str): bool
+    + elenca_dispositivi(): list
+    + get_dispositivi_per_tipo(tipo: str): list
   }
 
   class Dispositivo {
-    + id: int
-    + nome: String
-    + stato: String
-    + online: Boolean
-    + tipo: String
-    + id_stanza: int
-    + __init__(id: int, nome: String, tipo: String, id_stanza: int)
+    + id: str
+    + nome: str
+    + stato: str
+    + online: bool
+    + tipo: str
+    + id_stanza: str
     + accendi(): void
     + spegni(): void
-    + cambia_stato(nuovo_stato: String): Boolean
-    + invia_comando(comando: String): Boolean
-    + is_online(): Boolean
-    + get_stato(): String
-    + get_tipo(): String
+    + cambia_stato(nuovo_stato: str): bool
+    + invia_comando(comando: str): bool
+    + is_online(): bool
+    + get_stato(): str
+    + get_tipo(): str
   }
 
   class ServizioStanze {
     + crea(stanza: Stanza): Stanza
     + aggiorna(stanza: Stanza): Stanza
-    + elimina(id_stanza: int): Boolean
-    + elenca(): List<Stanza>
+    + elimina(id_stanza: str): bool
+    + elenca(): list
+    + trova_per_id(id_stanza: str): Stanza
   }
 
   class ServizioDispositivi {
     + crea(dispositivo: Dispositivo): Dispositivo
     + aggiorna(dispositivo: Dispositivo): Dispositivo
-    + elimina(id_dispositivo: int): Boolean
-    + elenca(): List<Dispositivo>
-    + invia_comando(id_dispositivo: int, comando: String): Dispositivo
+    + elimina(id_dispositivo: str): bool
+    + elenca(): list
+    + trova_per_id(id_dispositivo: str): Dispositivo
+    + invia_comando(id_dispositivo: str, comando: str): Dispositivo
   }
 }
 
 Stanza "1" o-- "0..*" Dispositivo : contiene
 
-ServizioStanze "1" --> "0..*" Stanza : gestisce
-ServizioDispositivi "1" --> "0..*" Dispositivo : gestisce
+ServizioStanze --> Stanza : gestisce
+ServizioDispositivi --> Dispositivo : gestisce
 
 ServizioStanze --> Dispositivo : assegna
 ServizioDispositivi --> Stanza : opera su

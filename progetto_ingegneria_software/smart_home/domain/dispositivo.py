@@ -5,75 +5,70 @@ Rappresenta un dispositivo smart (luce, termostato, serratura, ecc.)
 collegato al sistema.
 """
 
-from __future__ import annotations
-
-from typing import Optional
-
 
 class Dispositivo:
     """Dispositivo intelligente con stato, tipo e connessione."""
 
-    def __init__(self, id_dispositivo: str, nome: str, tipo: str,
-                 id_stanza: str) -> None:
-        self._id: str = id_dispositivo
-        self._nome: str = nome
-        self._tipo: str = tipo
-        self._stato: str = "spento"
-        self._online: bool = True
-        self._id_stanza: str = id_stanza
+    def __init__(self, id_dispositivo, nome, tipo, id_stanza):
+        self._id = id_dispositivo
+        self._nome = nome
+        self._tipo = tipo
+        self._stato = "spento"
+        self._online = True
+        self._id_stanza = id_stanza
 
     @property
-    def id(self) -> str:
+    def id(self):
         return self._id
 
     @property
-    def nome(self) -> str:
+    def nome(self):
         return self._nome
 
     @nome.setter
-    def nome(self, valore: str) -> None:
+    def nome(self, valore):
         self._nome = valore
 
     @property
-    def tipo(self) -> str:
+    def tipo(self):
         return self._tipo
 
     @property
-    def stato(self) -> str:
+    def stato(self):
         return self._stato
 
     @property
-    def online(self) -> bool:
+    def online(self):
         return self._online
 
     @online.setter
-    def online(self, valore: bool) -> None:
+    def online(self, valore):
         self._online = valore
 
     @property
-    def id_stanza(self) -> str:
+    def id_stanza(self):
         return self._id_stanza
 
     @id_stanza.setter
-    def id_stanza(self, valore: str) -> None:
+    def id_stanza(self, valore):
         self._id_stanza = valore
 
-    def accendi(self) -> None:
+    def accendi(self):
         """Accende il dispositivo e ne aggiorna lo stato."""
         self._stato = "acceso"
 
-    def spegni(self) -> None:
+    def spegni(self):
         """Spegne il dispositivo e ne aggiorna lo stato."""
         self._stato = "spento"
 
-    def cambia_stato(self, nuovo_stato: str) -> bool:
+    def cambia_stato(self, nuovo_stato):
         """Imposta un nuovo stato personalizzato. Restituisce False se il dispositivo offline."""
         if not self._online:
             return False
         self._stato = nuovo_stato
         return True
 
-    def invia_comando(self, comando: str) -> bool:
+    def invia_comando(self, comando):
         """
         Elabora un comando testuale sul dispositivo.
 
@@ -90,18 +85,18 @@ class Dispositivo:
             self._stato = comando
         return True
 
-    def is_online(self) -> bool:
+    def is_online(self):
         """Verifica se il dispositivo connesso alla rete."""
         return self._online
 
-    def get_stato(self) -> str:
+    def get_stato(self):
         """Restituisce lo stato corrente del dispositivo."""
         return self._stato
 
-    def get_tipo(self) -> str:
+    def get_tipo(self):
         """Restituisce il tipo del dispositivo."""
         return self._tipo
 
-    def applica_comando(self, comando: str) -> bool:
+    def applica_comando(self, comando):
         """Alias per invia_comando, usato nei diagrammi di sequenza."""
         return self.invia_comando(comando)

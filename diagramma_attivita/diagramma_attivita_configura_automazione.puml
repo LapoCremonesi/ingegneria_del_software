@@ -1,13 +1,14 @@
 @startuml
-  title Diagramma Attivita - Configura automazione semplice (Utente o Amministratore)
+  title Diagramma Attivita - Configura automazione (Utente o Amministratore)
 
   start
     :Aprire sezione automazioni;
-    :Inserire orario e comando;
-    :Salvare regola;
-  if (Regola valida?) then (Si)
-    :Attivare automazione;
-    :Registrare evento;
+    :Inserire nome, orario e dispositivo;
+    :Aggiungere regole con condizioni e azioni;
+    :Salvare automazione;
+  if (Dati validi?) then (Si)
+    :Attivare automazione (opzionale);
+    :Registrare evento AUTOMAZIONE_CREATA;
     :Mostrare conferma;
   else (No)
     :Mostrare errori validazione;

@@ -1,10 +1,10 @@
 @startuml
-  title Diagramma Attivita - Consultazione storico eventi (solo Amministratore)
+  title Diagramma Attivita - Consultazione storico eventi
 
   start
     :Aprire storico eventi;
     :Impostare filtri;
-    :Ricercare eventi;
+    :Ricercare eventi su repository;
     :Mostrare risultati;
   if (Richiesta esportazione?) then (Si)
     :Generare file log;

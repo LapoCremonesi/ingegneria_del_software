@@ -3,78 +3,125 @@ title Package di Analisi: Attività - Smart Home System
 
 package "Gestione Attività" as PktAttivita <<Dominio>> {
   class Utente {
-    + id: int
-    + nome: String
-    + email: String
-    + passwordHash: String
-    + __init__(id, nome, email, password)
-    + autentica(password: String): Boolean
-    + cambia_password(nuova_password: String): void
-    + get_email(): String
-    + get_id(): int
+    + id: str
+    + nome: str
+    + email: str
+    + password_hash: str
+    + autentica(password: str): bool
+    + cambia_password(nuova_password: str): void
   }
 
   class Amministratore {
-    + livelloAccesso: int
-    + __init__(id, nome, email, password, livello: int)
+    + livello_accesso: int
     + gestisci_automazione(automazione: Automazione): void
-    + consulta_log(): List<Evento>
-    + crea_utente(utente: Utente): Boolean
-    + elimina_utente(id: int): Boolean
+    + consulta_log(eventi: list): list
+    + crea_utente(utente: Utente): bool
+    + elimina_utente(id_utente: str): bool
   }
 
-  class Automazione {
-    + id: int
-    + nome: String
-    + attiva: Boolean
-    + orario: DateTime
-    + regole: List<Regola>
-    + __init__(id, nome, orario: DateTime)
-    + attiva_automazione(): void
-    + disattiva_automazione(): void
-    + aggiungi_regola(regola: Regola): void
-    + rimuovi_regola(id: int): Boolean
-    + esegui(): Boolean
-    + valuta_regole(): List<Regola>
+  class Stanza {
+    + id: str
+    + nome: str
+    + piano: int
+    + aggiungi_dispositivo(dispositivo: Dispositivo): void
+    + rimuovi_dispositivo(id_dispositivo: str): bool
+    + elenca_dispositivi(): list
+    + get_dispositivi_per_tipo(tipo: str): list
+  }
+
+  class Dispositivo {
+    + id: str
+    + nome: str
+    + tipo: str
+    + stato: str
+    + online: bool
+    + id_stanza: str
+    + accendi(): void
+    + spegni(): void
+    + cambia_stato(nuovo_stato: str): bool
+    + invia_comando(comando: str): bool
+    + is_online(): bool
+    + get_stato(): str
+    + get_tipo(): str
+    + applica_comando(comando: str): bool
+  }
+
+  class Luce {
+    + intensita: int
+    + colore: str
+    + attenua(valore: int): bool
+    + cambia_colore(colore: str): bool
+  }
+
+  class Termostato {
+    + temperatura_target: float
+    + modalita: str
+    + imposta_temperatura(temp: float): bool
+    + cambia_modalita(modalita: str): bool
+  }
+
+  class Serratura {
+    + modalita_sicurezza: bool
+    + blocca(): void
+    + sblocca(): bool
+    + attiva_sicurezza(): void
+    + disattiva_sicurezza(): void
   }
 
   class Regola {
-    + id: int
-    + tipoCondizione: String
-    + valoreCondizione: String
-    + azione: String
-    + __init__(id, tipo: String, valore: String, azione: String)
-    + valuta_condizione(): Boolean
-    + esegui_azione(): String
-    + get_tipo_condizione(): String
+    + id: str
+    + tipo_condizione: str
+    + valore_condizione: str
+    + azione: str
+    + valuta_condizione(): bool
+    + esegui_azione(): str
+  }
+
+  class Automazione {
+    + id: str
+    + nome: str
+    + id_dispositivo: str
+    + attiva: bool
+    + orario: str
+    + ultima_esecuzione: str
+    + attiva_automazione(): void
+    + disattiva_automazione(): void
+    + aggiungi_regola(regola: Regola): void
+    + rimuovi_regola(id_regola: str): bool
+    + valuta_regole(): list
+    + deve_eseguire(): bool
+    + esegui(): bool
   }
 
   class Evento {
-    + id: int
+    + id: str
     + timestamp: DateTime
-    + tipo: String
-    + descrizione: String
-    + idDispositivo: int
-    + __init__(id, tipo: String, descrizione: String, idDisp: int)
-    + to_string(): String
+    + tipo: str
+    + descrizione: str
+    + id_dispositivo: str
+    + to_string(): str
     + get_timestamp(): DateTime
-    + get_tipo(): String
+    + get_tipo(): str
   }
 
   class LogEventi {
-    + id: int
-    + eventi: List<Evento>
-    + __init__(id: int)
+    + id: str
+    + eventi: list
     + aggiungi_evento(evento: Evento): void
-    + filtra_eventi(tipo: String): List<Evento>
-    + esporta_log(): String
-    + elimina_evento(id: int): Boolean
-    + get_eventi_per_data(data: DateTime): List<Evento>
+    + elimina_evento(id_evento: str): bool
+    + filtra_eventi(tipo: str): list
+    + get_eventi_per_data(data: str): list
+    + esporta_log(): str
   }
 }
 
 Utente <|-- Amministratore
-Automazione "1" o-- "1..*" Regola : contiene
+Dispositivo <|-- Luce
+Dispositivo <|-- Termostato
+Dispositivo <|-- Serratura
+Stanza "1" o-- "0..*" Dispositivo : contiene
+Automazione "1" o-- "1..*" Regola : composta da
+Automazione ..> Dispositivo : comanda
 LogEventi "1" o-- "0..*" Evento : registra
 Amministratore "1" --> "0..*" Automazione : gestisce
 

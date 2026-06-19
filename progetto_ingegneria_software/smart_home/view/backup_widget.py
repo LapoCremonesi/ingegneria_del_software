@@ -1,8 +1,9 @@
-from typing import List, Optional
+import os
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
-    QHBoxLayout, QLabel, QListWidget, QPushButton,
-    QVBoxLayout, QWidget,
+    QHBoxLayout, QHeaderView, QLabel, QMessageBox, QPushButton,
+    QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget,
 )
 
 from smart_home.controller.controllore_sistema import ControlloreSistema
@@ -10,8 +11,7 @@ from smart_home.controller.controllore_sistema import ControlloreSistema
 
 class WidgetBackup(QWidget):
 
-    def __init__(self, controllore_sistema: ControlloreSistema,
-                 parent: Optional[QWidget] = None) -> None:
+    def __init__(self, controllore_sistema, parent=None):
         super().__init__(parent)
         self._c = controllore_sistema
         layout = QVBoxLayout(self)
@@ -30,8 +30,20 @@ class WidgetBackup(QWidget):
         desc.setWordWrap(True)
         layout.addWidget(desc)
 
-        self._lista = QListWidget()
-        layout.addWidget(self._lista)
+        self._tabella = QTableWidget()
+        self._tabella.setColumnCount(2)
+        self._tabella.setHorizontalHeaderLabels(["Backup", "Data"])
+        self._tabella.horizontalHeader().setStretchLastSection(True)
+        self._tabella.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.Stretch)
+        self._tabella.setSelectionBehavior(
+            QTableWidget.SelectionBehavior.SelectRows)
+        self._tabella.setSelectionMode(
+            QTableWidget.SelectionMode.SingleSelection)
+        self._tabella.setAlternatingRowColors(True)
+        self._tabella.verticalHeader().setVisible(False)
+        self._tabella.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        layout.addWidget(self._tabella)
 
         pulsanti = QHBoxLayout()
         pulsanti.setSpacing(8)
@@ -45,6 +57,11 @@ class WidgetBackup(QWidget):
         self._btn_carica.clicked.connect(self._carica)
         pulsanti.addWidget(self._btn_carica)
 
+        self._btn_elimina = QPushButton("Elimina Backup")
+        self._btn_elimina.setObjectName("btn_elimina")
+        self._btn_elimina.clicked.connect(self._elimina)
+        pulsanti.addWidget(self._btn_elimina)
+
         pulsanti.addStretch()
         layout.addLayout(pulsanti)
 
@@ -57,15 +74,29 @@ class WidgetBackup(QWidget):
         self._aggiorna_lista()
 
     def _aggiorna_lista(self):
-        self._lista.clear()
+        self._tabella.setRowCount(0)
         backup = self._c.elenca_backup()
         if not backup:
-            self._lista.addItem("Nessun backup disponibile")
-        else:
-            for b in backup:
-                self._lista.addItem(b)
+            self._tabella.setRowCount(1)
+            self._tabella.setItem(0, 0, QTableWidgetItem(
+                "Nessun backup disponibile"))
+            self._tabella.setSpan(0, 0, 1, 2)
+            return
+        for i, percorso in enumerate(backup):
+            self._tabella.setRowCount(i + 1)
+            nome = os.path.basename(percorso)
+            data = nome.replace("backup_", "").replace(".json", "")
+            data = data.replace("_", " ")
+            item_nome = QTableWidgetItem(nome)
+            item_nome.setData(Qt.ItemDataRole.UserRole, percorso)
+            item_nome.setToolTip(percorso)
+            self._tabella.setItem(i, 0, item_nome)
+            item_data = QTableWidgetItem(data)
+            item_data.setData(Qt.ItemDataRole.UserRole, percorso)
+            item_data.setToolTip(percorso)
+            self._tabella.setItem(i, 1, item_data)
 
-    def _mostra(self, msg: str, errore: bool = False):
+    def _mostra(self, msg, errore=False):
         self._status.setText(msg)
         self._status.setStyleSheet(
             f"color: {'#dc2626' if errore else '#2563eb'}; "
@@ -78,9 +109,40 @@ class WidgetBackup(QWidget):
         self._mostra(r)
 
     def _carica(self):
-        item = self._lista.currentItem()
-        if not item or item.text() == "Nessun backup disponibile":
-            self._mostra("Seleziona un backup dalla lista.", errore=True)
+        row = self._tabella.currentRow()
+        if row < 0:
+            self._mostra("Seleziona un backup dalla tabella.", errore=True)
             return
-        r = self._c.carica_backup(item.text())
+        item = self._tabella.item(row, 0)
+        if not item or not item.data(Qt.ItemDataRole.UserRole):
+            self._mostra("Seleziona un backup dalla tabella.", errore=True)
+            return
+        percorso = item.data(Qt.ItemDataRole.UserRole)
+        r = self._c.carica_backup(percorso)
         self._mostra(r)
+
+    def _elimina(self):
+        row = self._tabella.currentRow()
+        if row < 0:
+            self._mostra("Seleziona un backup dalla tabella.", errore=True)
+            return
+        item = self._tabella.item(row, 0)
+        if not item or not item.data(Qt.ItemDataRole.UserRole):
+            self._mostra("Seleziona un backup dalla tabella.", errore=True)
+            return
+        percorso = item.data(Qt.ItemDataRole.UserRole)
+        nome = os.path.basename(percorso)
+        conferma = QMessageBox.question(
+            self, "Elimina backup",
+            f"Eliminare il backup '{nome}'?\nQuesta operazione non puo essere annullata.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
+        )
+        if conferma != QMessageBox.StandardButton.Yes:
+            return
+        ok = self._c.elimina_backup(percorso)
+        self._aggiorna_lista()
+        if ok:
+            self._mostra(f"Backup '{nome}' eliminato.")
+        else:
+            self._mostra(f"Errore nell'eliminazione del backup.", errore=True)

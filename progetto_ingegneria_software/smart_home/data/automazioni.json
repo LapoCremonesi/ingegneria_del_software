@@ -4,6 +4,8 @@
     "nome": "Accendi luce soggiorno sera",
     "attiva": true,
     "orario": "19:00",
+    "id_dispositivo": 1,
+    "ultima_esecuzione": null,
     "regole": [
       {
         "id": 1,
@@ -18,12 +20,46 @@
     "nome": "Spegni tutto notte",
     "attiva": false,
     "orario": "23:00",
+    "id_dispositivo": 2,
+    "ultima_esecuzione": null,
     "regole": [
       {
         "id": 2,
         "tipo_condizione": "orario",
         "valore_condizione": "23:00",
         "azione": "spegni"
+      }
+    ]
+  },
+  {
+    "id": "73334b90-6885-4d59-a2c6-1dd8d4b05b9f",
+    "nome": "Luce cucina",
+    "attiva": true,
+    "orario": "16:14",
+    "id_dispositivo": "3",
+    "ultima_esecuzione": "2026-06-19",
+    "regole": [
+      {
+        "id": "ca4b3da9-1019-487b-aa6d-be556838f094",
+        "tipo_condizione": "orario",
+        "valore_condizione": "16:14",
+        "azione": "attenua"
+      }
+    ]
+  },
+  {
+    "id": "a1b64331-0532-403d-9f04-739c85914866",
+    "nome": "Luce cucina",
+    "attiva": true,
+    "orario": "16:24",
+    "id_dispositivo": "3",
+    "ultima_esecuzione": "2026-06-19",
+    "regole": [
+      {
+        "id": "c1ce173b-a06f-4590-8e6c-67a5888d3cc7",
+        "tipo_condizione": "orario",
+        "valore_condizione": "16:24",
+        "azione": "accendi"
       }
     ]
   }

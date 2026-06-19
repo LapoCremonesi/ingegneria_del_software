@@ -7,6 +7,7 @@ actor "Tempo" as T
 
 rectangle "Gestione Sistema e Monitoraggio" {
   usecase "Gestione backup e ripristino" as UC7
+  usecase "Eliminazione backup" as UC9
   usecase "Monitoraggio e statistiche" as UC8
   usecase "Registrazione eventi di sistema" as UCE1
 }
@@ -15,10 +16,12 @@ U --> UC8
 
 A --> UC7
 A --> UC8
+A --> UC9
 
 T --> UC7
 
 UC7 ..> UCE1 : <<include>>
 UC8 ..> UCE1 : <<include>>
+UC9 ..> UCE1 : <<include>>
 
 @enduml

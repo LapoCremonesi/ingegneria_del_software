@@ -2,13 +2,21 @@
   title Diagramma Attivita - Esecuzione automazione (Sistema)
 
   start
-    :Attendere trigger (orario/condizione);
-    :Valutare regole attive;
-  if (Condizione soddisfatta?) then (Si)
-    :Eseguire azione sul dispositivo;
-    :Registrare evento esecuzione;
+    :ProgrammatoreAutomazioni attende orario programmato;
+    :Timer one-shot scatta;
+    :ServizioAutomazioni.elenca_attive();
+    :Per ogni automazione attiva, chiama deve_eseguire();
+  if (deve_eseguire() == True?) then (Si)
+    :Valuta regole soddisfatte (valuta_regole);
+    :Invia comando al dispositivo (invia_comando);
+    :Registra esecuzione (ultima_esecuzione = oggi);
+    :Aggiorna repository automazioni;
+    :Registra evento AUTOMAZIONE_ESEGUITA;
+    :Emette segnale automazioni_eseguite;
+    :WidgetDashboard.aggiorna();
   else (No)
     :Nessuna azione;
   endif
+    :Riprogramma prossimo orario;
   stop
 @enduml

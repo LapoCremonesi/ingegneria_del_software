@@ -1,5 +1,3 @@
-from typing import List
-
 from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import (
     QHBoxLayout, QLabel, QLineEdit, QPushButton,
@@ -13,11 +11,10 @@ from smart_home.domain.evento import Evento
 
 class WidgetDashboard(QWidget):
 
-    def __init__(self, controllore_sistema: ControlloreSistema,
-                 parent: QWidget = None) -> None:
+    def __init__(self, controllore_sistema, parent=None):
         super().__init__(parent)
         self._c = controllore_sistema
-        self._id_utente: str = ""
+        self._id_utente = ""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(16)
@@ -49,12 +46,18 @@ class WidgetDashboard(QWidget):
 
         layout.addLayout(pulsanti)
 
-    def imposta_utente(self, id_utente: str) -> None:
+    def imposta_utente(self, id_utente):
         self._id_utente = id_utente
         self.aggiorna()
 
-    def aggiorna(self) -> None:
+    def aggiorna(self):
+        eseguite = self._c.esegui_automazioni()
         testo = self._c.apri_dashboard(self._id_utente) + "\n"
+        if eseguite:
+            testo += "Automazioni eseguite:\n"
+            for msg in eseguite:
+                testo += f"  - {msg}\n"
+            testo += "\n"
         offline = self._c.monitora_dispositivi()
         if offline:
             testo += "\nDispositivi Offline:\n"
@@ -62,11 +65,11 @@ class WidgetDashboard(QWidget):
                 testo += f"  - {d.nome} ({d.tipo})\n"
         self._area.setPlainText(testo)
 
-    def showEvent(self, event: QShowEvent) -> None:
+    def showEvent(self, event):
         super().showEvent(event)
         self.aggiorna()
 
-    def _statistiche(self) -> None:
+    def _statistiche(self):
         filtro = self._filtro.text()
         eventi = self._c.genera_statistiche(filtro)
         testo = f"Statistiche (filtro: '{filtro}')\n"

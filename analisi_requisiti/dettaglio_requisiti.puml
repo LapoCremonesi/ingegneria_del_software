@@ -19,7 +19,7 @@ package "Gestione Automazioni" {
   class "RF8 - Inserisci automazione" as RF8
   class "RF9 - Modifica automazione" as RF9
   class "RF10 - Attiva o disattiva automazione" as RF10
-  class "RF11 - Valuta automazioni" as RF11
+  class "RF11 - Esecuzione automatica schedulata" as RF11
 }
 
 package "Gestione Storico" {
@@ -30,13 +30,16 @@ package "Gestione Storico" {
 
 package "Gestione Sistema" {
   class "RF15 - Genera statistiche" as RF15
-  class "RF16 - Backup automatico" as RF16
-  class "RF17 - Gestisci notifiche" as RF17
+  class "RF16 - Backup e ripristino" as RF16
+  class "RF17 - Eliminazione backup" as RF17
+  class "RF18 - Dashboard con stato dispositivi" as RF18
 }
 
 package "Requisiti non funzionali" {
   class "RNF1 - Implementazione in Python 3" as RNF1
   class "RNF2 - Convalida password" as RNF2
+  class "RNF3 - Persistenza su file JSON" as RNF3
+  class "RNF4 - Interfaccia GUI con PyQt6" as RNF4
 }
 
 @enduml

@@ -5,22 +5,33 @@ actor Utente
 actor Amministratore
 
 box "Interfaccia"
-participant "VistaAutomazioni" as VistaAutomazioni
+participant "WidgetAutomazioni" as WidgetAutomazioni
 end box
 
 box "Logica applicativa"
 participant "ControlloreAutomazioni" as ControlloreAutomazioni
 participant "ServizioAutomazioni" as ServizioAutomazioni
+participant "ServizioLog" as ServizioLog
 database "RepositoryAutomazioni" as RepositoryAutomazioni
 end box
 
 == Crea automazione ==
-Utente -> VistaAutomazioni : creaRegola(regola)
-VistaAutomazioni -> ControlloreAutomazioni : creaRegola(regola)
-ControlloreAutomazioni -> ServizioAutomazioni : crea(regola)
-ServizioAutomazioni -> RepositoryAutomazioni : salva(regola)
-RepositoryAutomazioni --> ServizioAutomazioni : regolaSalvata
-ServizioAutomazioni --> ControlloreAutomazioni : regolaSalvata
-ControlloreAutomazioni --> VistaAutomazioni : mostraRisultatoOperazione()
+Utente -> WidgetAutomazioni : crea_regola(nome, orario, id_dispositivo, regole)
+Amministratore -> WidgetAutomazioni : crea_regola(nome, orario, id_dispositivo, regole)
+WidgetAutomazioni -> ControlloreAutomazioni : crea_regola(automazione)
+ControlloreAutomazioni -> ServizioAutomazioni : crea(automazione)
+ServizioAutomazioni -> RepositoryAutomazioni : salva(automazione)
+RepositoryAutomazioni --> ServizioAutomazioni : automazione_salvata
+ServizioAutomazioni -> ServizioLog : registra_evento("AUTOMAZIONE_CREATA", msg)
+ServizioAutomazioni --> ControlloreAutomazioni : automazione_creata
+ControlloreAutomazioni --> WidgetAutomazioni : mostra_risultato_operazione()
 
+== Attiva/disattiva automazione ==
+Utente -> WidgetAutomazioni : toggle_automazione(id)
+WidgetAutomazioni -> ControlloreAutomazioni : aggiorna_regola(automazione)
+ControlloreAutomazioni -> ServizioAutomazioni : aggiorna(automazione)
+ServizioAutomazioni -> RepositoryAutomazioni : aggiorna(automazione)
+RepositoryAutomazioni --> ServizioAutomazioni : ok
+ServizioAutomazioni --> ControlloreAutomazioni : automazione_aggiornata
+ControlloreAutomazioni --> WidgetAutomazioni : mostra_risultato_operazione()
 @enduml

@@ -8,116 +8,128 @@ skinparam defaultFontSize 11
 package "Analisi Smart Home" as PanalisiSH <<Analysis>> {
   package "Attività" as PAttivita <<Dominio>> {
     class Utente <<Entity>> {
-      + id: int
-      + email: String
-      + autentica(password: String): Boolean
-      + cambia_password(nuova_password: String): void
-      + get_email(): String
-      + get_id(): int
+      + id: str
+      + email: str
+      + autentica(password: str): bool
+      + cambia_password(nuova_password: str): void
     }
 
     class Amministratore <<Entity>> {
-      + livelloAccesso: int
+      + livello_accesso: int
       + gestisci_automazione(auto: Automazione): void
     }
 
     class Automazione <<Entity>> {
-      + id: int
-      + nome: String
-      + attiva: Boolean
-      + esegui(): Boolean
+      + id: str
+      + nome: str
+      + attiva: bool
+      + orario: str
+      + deve_eseguire(): bool
+      + esegui(): bool
     }
 
     class Regola <<ValueObject>> {
-      + id: int
-      + tipoCondizione: String
-      + valuta_condizione(): Boolean
+      + id: str
+      + tipo_condizione: str
+      + valuta_condizione(): bool
     }
 
     class Evento <<Entity>> {
-      + id: int
+      + id: str
       + timestamp: DateTime
-      + tipo: String
+      + tipo: str
     }
 
     class Dispositivo <<Entity>> {
-      + id: int
-      + nome: String
-      + stato: String
-      + invia_comando(comando: String): Boolean
+      + id: str
+      + nome: str
+      + stato: str
+      + invia_comando(comando: str): bool
     }
 
     class Luce <<Entity>> {
       + intensita: int
-      + colore: String
+      + colore: str
     }
 
     class Termostato <<Entity>> {
       + temperatura_target: float
-      + modalita: String
+      + modalita: str
     }
 
     class Serratura <<Entity>> {
-      + modalita_sicurezza: Boolean
+      + modalita_sicurezza: bool
     }
 
     class Stanza <<Entity>> {
-      + id: int
-      + nome: String
+      + id: str
+      + nome: str
       + piano: int
       + aggiungi_dispositivo(disp: Dispositivo): void
     }
 
     class LogEventi <<Entity>> {
-      + id: int
-      + eventi: List<Evento>
+      + id: str
+      + eventi: list
       + aggiungi_evento(evento: Evento): void
     }
 
     Utente <|-- Amministratore
-    Automazione "1" o-- "1..*" Regola
-    Stanza "1" o-- "0..*" Dispositivo
+    Automazione "1" o-- "0..*" Regola : composta da
+    Stanza "1" o-- "0..*" Dispositivo : contiene
     Dispositivo <|-- Luce
     Dispositivo <|-- Termostato
     Dispositivo <|-- Serratura
-    LogEventi "1" o-- "0..*" Evento
+    LogEventi "1" o-- "0..*" Evento : registra
   }
 
   package "Servizio" as PServizio <<Service>> {
     class ServizioDispositivi <<Service>> {
-      + elenca_dispositivi(): List<Dispositivo>
-      + invia_comando(id: int, comando: String): void
+      + elenca(): list
+      + invia_comando(id: str, comando: str): Dispositivo
     }
 
     class ServizioStanze <<Service>> {
-      + elenca_stanze(): List<Stanza>
-      + crea_stanza(nome: String, piano: int): Stanza
+      + elenca(): list
+      + crea(stanza: Stanza): Stanza
+    }
+
+    class ServizioAutomazioni <<Service>> {
+      + esegui_tutte(): list
+      + elenca_attive(): list
+    }
+
+    class ProgrammatoreAutomazioni <<Service>> {
+      + avvia(): void
     }
 
     ServizioDispositivi --> Dispositivo
     ServizioStanze --> Stanza
+    ServizioAutomazioni --> Automazione
+    ProgrammatoreAutomazioni --> ServizioAutomazioni
   }
 
   package "Repository" as PRepository <<DataAccess>> {
     class RepositoryUtenti <<Repository>> {
-      + trova_per_email(email: String): Utente
+      + trova_per_email(email: str): Utente
       + salva(utente: Utente): void
     }
 
     class RepositoryEventi <<Repository>> {
-      + cerca(filtro: String): List<Evento>
+      + cerca(filtro: str): list
       + salva(evento: Evento): void
     }
 
     class RepositoryDispositivi <<Repository>> {
       + salva(dispositivo: Dispositivo): void
-      + trova_per_id(id: int): Dispositivo
+      + trova_per_id(id: str): Dispositivo
     }
 
     class RepositoryDatiSistema <<Repository>> {
-      + salva_backup(): String
-      + elenca_backup(): List<String>
-      + carica_backup(percorso: String): String
+      + salva_backup(): str
+      + elenca_backup(): list
+      + carica_backup(percorso: str): str
+      + elimina_backup(percorso: str): bool
     }
   }
 }

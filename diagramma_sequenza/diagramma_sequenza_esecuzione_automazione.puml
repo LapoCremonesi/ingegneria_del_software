@@ -3,26 +3,50 @@ title Sequenza OOP - Esecuzione automazione
 
 actor Tempo
 
-box "Interfaccia"
-participant "Sistema" as Sistema
+box "Scheduling"
+participant "ProgrammatoreAutomazioni" as Programmatore
 end box
 
 box "Logica applicativa"
 participant "ServizioAutomazioni" as ServizioAutomazioni
-participant "ControlloreDispositivi" as ControlloreDispositivi
+participant "Automazione" as Automazione
 participant "ServizioDispositivi" as ServizioDispositivi
+participant "Dispositivo" as Dispositivo
 participant "ServizioLog" as ServizioLog
+database "RepositoryAutomazioni" as RepositoryAuto
+database "RepositoryDispositivi" as RepositoryDisp
 end box
 
-Tempo -> Sistema : triggerAutomazioni()
-Sistema -> ServizioAutomazioni : elenca()
-ServizioAutomazioni --> Sistema : automazioniAttive
+box "Interfaccia"
+participant "WidgetDashboard" as WidgetDashboard
+end box
 
-loop per ogni automazione
-  Sistema -> ControlloreDispositivi : inviaComando(idDispositivo, comando)
-  ControlloreDispositivi -> ServizioDispositivi : inviaComando(idDispositivo, comando)
-  ServizioDispositivi --> ControlloreDispositivi : dispositivoAggiornato
-  ControlloreDispositivi --> Sistema : dispositivoAggiornato
-  Sistema -> ServizioLog : registraEvento("AUTOMAZIONE_ESEGUITA", messaggio)
+Tempo -> Programmatore : timer scatta (orario programmato)
+Programmatore -> ServizioAutomazioni : esegui_tutte()
+ServizioAutomazioni -> RepositoryAuto : trova_attive()
+RepositoryAuto --> ServizioAutomazioni : automazioni_attive
+
+loop per ogni automazione attiva
+  ServizioAutomazioni -> Automazione : deve_eseguire()
+  Automazione --> ServizioAutomazioni : True
+
+  ServizioAutomazioni -> Automazione : valuta_regole()
+  Automazione --> ServizioAutomazioni : regole_soddisfatte
+
+  ServizioAutomazioni -> ServizioDispositivi : invia_comando(id_dispositivo, comando)
+  ServizioDispositivi -> RepositoryDisp : trova_per_id(id_dispositivo)
+  RepositoryDisp --> ServizioDispositivi : dispositivo
+  ServizioDispositivi -> Dispositivo : applica_comando(comando)
+  Dispositivo --> ServizioDispositivi : True
+  ServizioDispositivi -> RepositoryDisp : aggiorna(dispositivo)
+  ServizioDispositivi --> ServizioAutomazioni : dispositivo_aggiornato
+
+  ServizioAutomazioni -> Automazione : esegui()
+  Automazione -> Automazione : ultima_esecuzione = oggi
+  ServizioAutomazioni -> RepositoryAuto : aggiorna(automazione)
+  ServizioAutomazioni -> ServizioLog : registra_evento("AUTOMAZIONE_ESEGUITA", msg)
 end
+
+Programmatore -> WidgetDashboard : segnale automazioni_eseguite
+WidgetDashboard -> WidgetDashboard : aggiorna()
 @enduml

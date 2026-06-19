@@ -6,9 +6,6 @@ deve rispettare, permettendo di cambiare strategia di persistenza senza
 alterare il resto dell'applicazione.
 """
 
-from abc import ABC, abstractmethod
-from typing import List, Optional
-
 from smart_home.domain.utente import Utente
 from smart_home.domain.stanza import Stanza
 from smart_home.domain.dispositivo import Dispositivo
@@ -16,160 +13,145 @@ from smart_home.domain.automazione import Automazione
 from smart_home.domain.evento import Evento
 
 
-class RepositoryUtenti(ABC):
+class RepositoryUtenti:
     """Interfaccia per la persistenza degli utenti."""
 
-    @abstractmethod
-    def trova_per_email(self, email: str) -> Optional[Utente]:
+    def trova_per_email(self, email):
         """Cerca un utente per email. Restituisce None se non trovato."""
         pass
 
-    @abstractmethod
-    def salva(self, utente: Utente) -> None:
+    def salva(self, utente):
         """Salva un utente (creazione o aggiornamento)."""
         pass
 
-    @abstractmethod
-    def aggiorna(self, utente: Utente) -> None:
+    def aggiorna(self, utente):
         """Aggiorna un utente esistente."""
         pass
 
+    def trova_tutti(self):
+        """Restituisce tutti gli utenti."""
+        pass
 
-class RepositoryStanze(ABC):
+    def elimina(self, id_utente):
+        """Elimina un utente dato il suo id."""
+        pass
+
+
+class RepositoryStanze:
     """Interfaccia per la persistenza delle stanze."""
 
-    @abstractmethod
-    def trova_tutti(self) -> List[Stanza]:
+    def trova_tutti(self):
         """Restituisce tutte le stanze."""
         pass
 
-    @abstractmethod
-    def trova_per_id(self, id_stanza: str) -> Optional[Stanza]:
+    def trova_per_id(self, id_stanza):
         """Cerca una stanza per id. Restituisce None se non trovata."""
         pass
 
-    @abstractmethod
-    def salva(self, stanza: Stanza) -> None:
+    def salva(self, stanza):
         """Salva una nuova stanza."""
         pass
 
-    @abstractmethod
-    def aggiorna(self, stanza: Stanza) -> None:
+    def aggiorna(self, stanza):
         """Aggiorna una stanza esistente."""
         pass
 
-    @abstractmethod
-    def elimina(self, id_stanza: str) -> bool:
+    def elimina(self, id_stanza):
         """Elimina una stanza dato il suo id."""
         pass
 
 
-class RepositoryDispositivi(ABC):
+class RepositoryDispositivi:
     """Interfaccia per la persistenza dei dispositivi."""
 
-    @abstractmethod
-    def trova_tutti(self) -> List[Dispositivo]:
+    def trova_tutti(self):
         """Restituisce tutti i dispositivi."""
         pass
 
-    @abstractmethod
-    def trova_per_id(self, id_dispositivo: str) -> Optional[Dispositivo]:
+    def trova_per_id(self, id_dispositivo):
         """Cerca un dispositivo per id."""
         pass
 
-    @abstractmethod
-    def salva(self, dispositivo: Dispositivo) -> None:
+    def salva(self, dispositivo):
         """Salva un nuovo dispositivo."""
         pass
 
-    @abstractmethod
-    def aggiorna(self, dispositivo: Dispositivo) -> None:
+    def aggiorna(self, dispositivo):
         """Aggiorna un dispositivo esistente."""
         pass
 
-    @abstractmethod
-    def elimina(self, id_dispositivo: str) -> bool:
+    def elimina(self, id_dispositivo):
         """Elimina un dispositivo dato il suo id."""
         pass
 
-    @abstractmethod
-    def aggiorna_stanza(self, id_dispositivo: str, id_stanza: str) -> bool:
+    def aggiorna_stanza(self, id_dispositivo, id_stanza):
         """Sposta un dispositivo in un'altra stanza."""
         pass
 
-    @abstractmethod
-    def trova_offline(self) -> List[Dispositivo]:
+    def trova_offline(self):
         """Restituisce tutti i dispositivi offline."""
         pass
 
 
-class RepositoryAutomazioni(ABC):
+class RepositoryAutomazioni:
     """Interfaccia per la persistenza delle automazioni."""
 
-    @abstractmethod
-    def trova_tutti(self) -> List[Automazione]:
+    def trova_tutti(self):
         """Restituisce tutte le automazioni."""
         pass
 
-    @abstractmethod
-    def trova_per_id(self, id_automazione: str) -> Optional[Automazione]:
+    def trova_per_id(self, id_automazione):
         """Cerca un'automazione per id. Restituisce None se non trovata."""
         pass
 
-    @abstractmethod
-    def trova_attive(self) -> List[Automazione]:
+    def trova_attive(self):
         """Restituisce solo le automazioni attive."""
         pass
 
-    @abstractmethod
-    def salva(self, automazione: Automazione) -> None:
+    def salva(self, automazione):
         """Salva una nuova automazione."""
         pass
 
-    @abstractmethod
-    def aggiorna(self, automazione: Automazione) -> None:
+    def aggiorna(self, automazione):
         """Aggiorna un'automazione esistente."""
         pass
 
-    @abstractmethod
-    def elimina(self, id_automazione: str) -> bool:
+    def elimina(self, id_automazione):
         """Elimina un'automazione dato il suo id."""
         pass
 
 
-class RepositoryEventi(ABC):
+class RepositoryEventi:
     """Interfaccia per la persistenza degli eventi di log."""
 
-    @abstractmethod
-    def cerca(self, filtro: str) -> List[Evento]:
+    def cerca(self, filtro):
         """Cerca eventi applicando un filtro testuale."""
         pass
 
-    @abstractmethod
-    def salva(self, evento: Evento) -> None:
+    def salva(self, evento):
         """Salva un nuovo evento."""
         pass
 
-    @abstractmethod
-    def aggrega(self, filtro: str) -> List[Evento]:
+    def aggrega(self, filtro):
         """Restituisce eventi aggregati secondo un criterio."""
         pass
 
 
-class RepositoryDatiSistema(ABC):
+class RepositoryDatiSistema:
     """Interfaccia per backup e ripristino dei dati di sistema."""
 
-    @abstractmethod
-    def salva_backup(self) -> str:
+    def salva_backup(self):
         """Crea un backup unificato di tutti i dati del sistema. Restituisce il percorso."""
         pass
 
-    @abstractmethod
-    def elenca_backup(self) -> List[str]:
+    def elenca_backup(self):
         """Restituisce la lista dei file di backup disponibili."""
         pass
 
-    @abstractmethod
-    def carica_backup(self, percorso: str) -> str:
+    def carica_backup(self, percorso):
         """Carica un file di backup e ripristina tutti i dati. Restituisce un messaggio."""
+        pass
+
+    def elimina_backup(self, percorso):
+        """Elimina un file di backup. Restituisce True se eliminato."""
         pass

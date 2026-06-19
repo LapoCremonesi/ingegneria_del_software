@@ -1,5 +1,4 @@
 import uuid
-from typing import List, Optional
 
 from PyQt6.QtCore import QTime
 from PyQt6.QtGui import QShowEvent
@@ -16,8 +15,7 @@ from smart_home.domain.automazione import Automazione, Regola
 
 class WidgetAutomazioni(QWidget):
 
-    def __init__(self, controllore: ControlloreAutomazioni,
-                 parent: Optional[QWidget] = None) -> None:
+    def __init__(self, controllore, parent=None):
         super().__init__(parent)
         self._c = controllore
         layout = QVBoxLayout(self)
@@ -73,7 +71,7 @@ class WidgetAutomazioni(QWidget):
 
         self._aggiorna()
 
-    def showEvent(self, event: QShowEvent) -> None:
+    def showEvent(self, event):
         super().showEvent(event)
         self._aggiorna()
 
@@ -92,7 +90,7 @@ class WidgetAutomazioni(QWidget):
             self._tabella.setItem(r, 4, QTableWidgetItem(a.id))
             self._tabella.setItem(r, 5, QTableWidgetItem(a.id_dispositivo))
 
-    def _selezionata(self) -> Optional[Automazione]:
+    def _selezionata(self):
         r = self._tabella.currentRow()
         if r < 0:
             return None
@@ -161,9 +159,7 @@ class WidgetAutomazioni(QWidget):
 
 class _DialogoAutomazione(QDialog):
 
-    def __init__(self, parent: Optional[QWidget] = None,
-                 automazione: Optional[Automazione] = None,
-                 id_dispositivo: Optional[str] = None) -> None:
+    def __init__(self, parent=None, automazione=None, id_dispositivo=None):
         super().__init__(parent)
         self._a = automazione
         self._id_dispositivo_predefinito = id_dispositivo
@@ -236,7 +232,7 @@ class _DialogoAutomazione(QDialog):
         self._btn_agg.clicked.connect(self._aggiungi)
         self._btn_rim.clicked.connect(self._rimuovi)
 
-        self._regole: List[Regola] = []
+        self._regole = []
         if automazione:
             self._nome.setText(automazione.nome)
             self._id_dispositivo_input.setText(automazione.id_dispositivo)

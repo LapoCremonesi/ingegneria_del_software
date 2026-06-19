@@ -9,7 +9,6 @@ per renderli persistenti su disco.
 import json
 import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional
 
 from smart_home.domain.automazione import Automazione, Regola
 from smart_home.domain.dispositivo import Dispositivo
@@ -32,16 +31,16 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 BACKUP_DIR = os.path.join(os.path.dirname(__file__), "..", "backup")
 
 
-def _data_path(filename: str) -> str:
+def _data_path(filename):
     return os.path.normpath(os.path.join(DATA_DIR, filename))
 
 
 # ── Helper di serializzazione ──────────────────────────────────
 
-def _to_dict(obj: Any) -> Dict[str, Any]:
+def _to_dict(obj):
     """Converte un oggetto del dominio in dizionario serializzabile."""
     if isinstance(obj, Utente):
-        d: Dict[str, Any] = {
+        d = {
             "id": str(obj.id),
             "nome": obj.nome,
             "email": obj.email,
@@ -62,7 +61,7 @@ def _to_dict(obj: Any) -> Dict[str, Any]:
         }
 
     if isinstance(obj, Dispositivo):
-        base: Dict[str, Any] = {
+        base = {
             "id": str(obj.id),
             "nome": obj.nome,
             "tipo": obj.tipo,
@@ -111,7 +110,7 @@ def _to_dict(obj: Any) -> Dict[str, Any]:
     raise TypeError(f"Tipo non supportato: {type(obj)}")
 
 
-def _from_dict(cls: type, data: Dict[str, Any]) -> Any:
+def _from_dict(cls, data):
     """Ricostruisce un oggetto del dominio da un dizionario."""
     if cls == Utente or cls == Amministratore:
         if data.get("tipo") == "amministratore":
@@ -142,7 +141,7 @@ def _from_dict(cls: type, data: Dict[str, Any]) -> Any:
         tipo = data.get("tipo", "")
         id_stanza = str(data.get("id_stanza", ""))
         if tipo == "luce":
-            d: Dispositivo = Luce(
+            d = Luce(
                 id_dispositivo=str(data["id"]),
                 nome=data["nome"],
                 id_stanza=id_stanza,
@@ -216,21 +215,21 @@ def _from_dict(cls: type, data: Dict[str, Any]) -> Any:
 class _BaseJSONRepository:
     """Fornisce caricamento e salvataggio generico su file JSON."""
 
-    def __init__(self, filename: str) -> None:
+    def __init__(self, filename):
         self._filepath = _data_path(filename)
 
-    def _carica(self) -> List[Dict[str, Any]]:
+    def _carica(self):
         if not os.path.exists(self._filepath):
             return []
         with open(self._filepath, "r", encoding="utf-8") as f:
             return json.load(f)
 
-    def _salva(self, dati: List[Dict[str, Any]]) -> None:
+    def _salva(self, dati):
         os.makedirs(os.path.dirname(self._filepath), exist_ok=True)
         with open(self._filepath, "w", encoding="utf-8") as f:
             json.dump(dati, f, indent=2, ensure_ascii=False)
 
-    def _trova_indice(self, dati: List[Dict[str, Any]], id_ricerca: str) -> int:
+    def _trova_indice(self, dati, id_ricerca):
         for i, d in enumerate(dati):
             if str(d.get("id")) == str(id_ricerca):
                 return i
@@ -242,16 +241,16 @@ class _BaseJSONRepository:
 class RepositoryUtentiJSON(_BaseJSONRepository, RepositoryUtenti):
     """Repository utenti persistente su file JSON."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__("utenti.json")
 
-    def trova_per_email(self, email: str) -> Optional[Utente]:
+    def trova_per_email(self, email):
         for d in self._carica():
             if d.get("email") == email:
                 return _from_dict(Utente, d)
         return None
 
-    def salva(self, utente: Utente) -> None:
+    def salva(self, utente):
         dati = self._carica()
         idx = self._trova_indice(dati, utente.id)
         entry = _to_dict(utente)
@@ -261,26 +260,38 @@ class RepositoryUtentiJSON(_BaseJSONRepository, RepositoryUtenti):
             dati.append(entry)
         self._salva(dati)
 
-    def aggiorna(self, utente: Utente) -> None:
+    def aggiorna(self, utente):
         self.salva(utente)
+
+    def trova_tutti(self):
+        return [_from_dict(Utente, d) for d in self._carica()]
+
+    def elimina(self, id_utente):
+        dati = self._carica()
+        idx = self._trova_indice(dati, id_utente)
+        if idx < 0:
+            return False
+        dati.pop(idx)
+        self._salva(dati)
+        return True
 
 
 class RepositoryStanzeJSON(_BaseJSONRepository, RepositoryStanze):
     """Repository stanze persistente su file JSON."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__("stanze.json")
 
-    def trova_tutti(self) -> List[Stanza]:
+    def trova_tutti(self):
         return [_from_dict(Stanza, d) for d in self._carica()]
 
-    def trova_per_id(self, id_stanza: str) -> Optional[Stanza]:
+    def trova_per_id(self, id_stanza):
         for d in self._carica():
             if str(d.get("id")) == id_stanza:
                 return _from_dict(Stanza, d)
         return None
 
-    def salva(self, stanza: Stanza) -> None:
+    def salva(self, stanza):
         dati = self._carica()
         idx = self._trova_indice(dati, stanza.id)
         entry = _to_dict(stanza)
@@ -290,10 +301,10 @@ class RepositoryStanzeJSON(_BaseJSONRepository, RepositoryStanze):
             dati.append(entry)
         self._salva(dati)
 
-    def aggiorna(self, stanza: Stanza) -> None:
+    def aggiorna(self, stanza):
         self.salva(stanza)
 
-    def elimina(self, id_stanza: str) -> bool:
+    def elimina(self, id_stanza):
         dati = self._carica()
         idx = self._trova_indice(dati, id_stanza)
         if idx < 0:
@@ -306,19 +317,19 @@ class RepositoryStanzeJSON(_BaseJSONRepository, RepositoryStanze):
 class RepositoryDispositiviJSON(_BaseJSONRepository, RepositoryDispositivi):
     """Repository dispositivi persistente su file JSON."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__("dispositivi.json")
 
-    def trova_tutti(self) -> List[Dispositivo]:
+    def trova_tutti(self):
         return [_from_dict(Dispositivo, d) for d in self._carica()]
 
-    def trova_per_id(self, id_dispositivo: str) -> Optional[Dispositivo]:
+    def trova_per_id(self, id_dispositivo):
         for d in self._carica():
             if str(d.get("id")) == id_dispositivo:
                 return _from_dict(Dispositivo, d)
         return None
 
-    def salva(self, dispositivo: Dispositivo) -> None:
+    def salva(self, dispositivo):
         dati = self._carica()
         idx = self._trova_indice(dati, dispositivo.id)
         entry = _to_dict(dispositivo)
@@ -328,10 +339,10 @@ class RepositoryDispositiviJSON(_BaseJSONRepository, RepositoryDispositivi):
             dati.append(entry)
         self._salva(dati)
 
-    def aggiorna(self, dispositivo: Dispositivo) -> None:
+    def aggiorna(self, dispositivo):
         self.salva(dispositivo)
 
-    def elimina(self, id_dispositivo: str) -> bool:
+    def elimina(self, id_dispositivo):
         dati = self._carica()
         idx = self._trova_indice(dati, id_dispositivo)
         if idx < 0:
@@ -340,7 +351,7 @@ class RepositoryDispositiviJSON(_BaseJSONRepository, RepositoryDispositivi):
         self._salva(dati)
         return True
 
-    def aggiorna_stanza(self, id_dispositivo: str, id_stanza: str) -> bool:
+    def aggiorna_stanza(self, id_dispositivo, id_stanza):
         dati = self._carica()
         idx = self._trova_indice(dati, id_dispositivo)
         if idx < 0:
@@ -349,7 +360,7 @@ class RepositoryDispositiviJSON(_BaseJSONRepository, RepositoryDispositivi):
         self._salva(dati)
         return True
 
-    def trova_offline(self) -> List[Dispositivo]:
+    def trova_offline(self):
         return [
             _from_dict(Dispositivo, d) for d in self._carica() if not d.get("online", True)
         ]
@@ -358,24 +369,24 @@ class RepositoryDispositiviJSON(_BaseJSONRepository, RepositoryDispositivi):
 class RepositoryAutomazioniJSON(_BaseJSONRepository, RepositoryAutomazioni):
     """Repository automazioni persistente su file JSON."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__("automazioni.json")
 
-    def trova_tutti(self) -> List[Automazione]:
+    def trova_tutti(self):
         return [_from_dict(Automazione, d) for d in self._carica()]
 
-    def trova_per_id(self, id_automazione: str) -> Optional[Automazione]:
+    def trova_per_id(self, id_automazione):
         for d in self._carica():
             if str(d.get("id")) == id_automazione:
                 return _from_dict(Automazione, d)
         return None
 
-    def trova_attive(self) -> List[Automazione]:
+    def trova_attive(self):
         return [
             _from_dict(Automazione, d) for d in self._carica() if d.get("attiva", False)
         ]
 
-    def salva(self, automazione: Automazione) -> None:
+    def salva(self, automazione):
         dati = self._carica()
         idx = self._trova_indice(dati, automazione.id)
         entry = _to_dict(automazione)
@@ -385,10 +396,10 @@ class RepositoryAutomazioniJSON(_BaseJSONRepository, RepositoryAutomazioni):
             dati.append(entry)
         self._salva(dati)
 
-    def aggiorna(self, automazione: Automazione) -> None:
+    def aggiorna(self, automazione):
         self.salva(automazione)
 
-    def elimina(self, id_automazione: str) -> bool:
+    def elimina(self, id_automazione):
         dati = self._carica()
         idx = self._trova_indice(dati, id_automazione)
         if idx < 0:
@@ -401,11 +412,11 @@ class RepositoryAutomazioniJSON(_BaseJSONRepository, RepositoryAutomazioni):
 class RepositoryEventiJSON(_BaseJSONRepository, RepositoryEventi):
     """Repository eventi persistente su file JSON."""
 
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__("eventi.json")
 
-    def cerca(self, filtro: str) -> List[Evento]:
-        risultati: List[Evento] = []
+    def cerca(self, filtro):
+        risultati = []
         filtro_lower = filtro.lower()
         for d in self._carica():
             if filtro_lower in d.get("tipo", "").lower() \
@@ -413,12 +424,12 @@ class RepositoryEventiJSON(_BaseJSONRepository, RepositoryEventi):
                 risultati.append(_from_dict(Evento, d))
         return risultati
 
-    def salva(self, evento: Evento) -> None:
+    def salva(self, evento):
         dati = self._carica()
         dati.append(_to_dict(evento))
         self._salva(dati)
 
-    def aggrega(self, filtro: str) -> List[Evento]:
+    def aggrega(self, filtro):
         """Restituisce eventi aggregati per tipo."""
         return [
             _from_dict(Evento, d) for d in self._carica()
@@ -429,15 +440,15 @@ class RepositoryEventiJSON(_BaseJSONRepository, RepositoryEventi):
 class RepositoryDatiSistemaJSON(_BaseJSONRepository, RepositoryDatiSistema):
     """Repository per backup e ripristino su file JSON unificati."""
 
-    _FONTI: List[str] = ["utenti.json", "stanze.json", "dispositivi.json",
-                         "automazioni.json", "eventi.json"]
+    _FONTI = ["utenti.json", "stanze.json", "dispositivi.json",
+              "automazioni.json", "eventi.json"]
 
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__("backup.json")
 
     # ── Backup ────────────────────────────────────────────────
 
-    def salva_backup(self) -> str:
+    def salva_backup(self):
         """
         Crea un backup unificato con timestamp.
 
@@ -450,7 +461,7 @@ class RepositoryDatiSistemaJSON(_BaseJSONRepository, RepositoryDatiSistema):
         os.makedirs(dir_backup, exist_ok=True)
         percorso = os.path.join(dir_backup, nome_file)
 
-        dati_backup: Dict[str, Any] = {
+        dati_backup = {
             "data_creazione": now.isoformat(),
         }
         for nome_fonte in self._FONTI:
@@ -468,7 +479,7 @@ class RepositoryDatiSistemaJSON(_BaseJSONRepository, RepositoryDatiSistema):
 
     # ── Elenco backup ─────────────────────────────────────────
 
-    def elenca_backup(self) -> List[str]:
+    def elenca_backup(self):
         """Restituisce la lista dei backup disponibili ordinati dal piu recente."""
         dir_backup = _backup_path()
         if not os.path.isdir(dir_backup):
@@ -480,7 +491,7 @@ class RepositoryDatiSistemaJSON(_BaseJSONRepository, RepositoryDatiSistema):
 
     # ── Ripristino ────────────────────────────────────────────
 
-    def carica_backup(self, percorso: str) -> str:
+    def carica_backup(self, percorso):
         """
         Carica un file di backup e ripristina i dati sovrascrivendo
         i file JSON originali.
@@ -508,8 +519,17 @@ class RepositoryDatiSistemaJSON(_BaseJSONRepository, RepositoryDatiSistema):
 
         return f"Ripristino completato da: {os.path.basename(percorso)}"
 
+    # ── Eliminazione ───────────────────────────────────────────
 
-def _backup_path() -> str:
+    def elimina_backup(self, percorso):
+        """Elimina un file di backup. Restituisce True se eliminato."""
+        if not os.path.exists(percorso):
+            return False
+        os.remove(percorso)
+        return True
+
+
+def _backup_path():
     """Restituisce il percorso assoluto della cartella backup, creandola se necessario."""
     p = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "backup"))
     os.makedirs(p, exist_ok=True)

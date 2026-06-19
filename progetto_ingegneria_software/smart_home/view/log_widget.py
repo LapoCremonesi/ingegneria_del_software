@@ -1,5 +1,3 @@
-from typing import Optional
-
 from PyQt6.QtGui import QShowEvent
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
@@ -12,8 +10,7 @@ from smart_home.controller.controllore_log import ControlloreLog
 
 class WidgetLog(QWidget):
 
-    def __init__(self, controllore_log: ControlloreLog,
-                 parent: Optional[QWidget] = None):
+    def __init__(self, controllore_log, parent=None):
         super().__init__(parent)
         self._c = controllore_log
         layout = QVBoxLayout(self)
@@ -61,7 +58,7 @@ class WidgetLog(QWidget):
         self._filtro.returnPressed.connect(self._btn_cerca.click)
         self._refresh()
 
-    def showEvent(self, event: QShowEvent) -> None:
+    def showEvent(self, event):
         super().showEvent(event)
         self._refresh()
 

@@ -1,16 +1,44 @@
 [
   {
-    "id": "20a731b1-cc12-43f9-93a2-4a55997feca6",
-    "timestamp": "2026-06-19T12:49:46.169884",
+    "id": "3ea061d7-f66e-4644-8711-4eef75b821e1",
+    "timestamp": "2026-06-19T16:21:56.408708",
     "tipo": "SISTEMA_AVVIATO",
     "descrizione": "Sistema Smart Home avviato",
     "id_dispositivo": null
   },
   {
-    "id": "a9c93453-cfb9-44f9-9cf6-9852a89abbd4",
-    "timestamp": "2026-06-19T12:49:53.572053",
+    "id": "d9eb810c-1cc5-4e03-b9d4-e57144e86773",
+    "timestamp": "2026-06-19T16:22:03.293550",
     "tipo": "LOGIN_EFFETTUATO",
-    "descrizione": "Utente 'Mario Rossi' ha effettuato l'accesso",
+    "descrizione": "Utente 'Admin' ha effettuato l'accesso",
+    "id_dispositivo": null
+  },
+  {
+    "id": "f5ca2a53-694d-4ab2-85e0-fe9ccbc0167c",
+    "timestamp": "2026-06-19T16:23:07.337991",
+    "tipo": "AUTOMAZIONE_CREATA",
+    "descrizione": "Automazione 'Luce cucina' creata",
+    "id_dispositivo": null
+  },
+  {
+    "id": "cd92fbfc-1f58-4c93-8128-0fd898ce8c48",
+    "timestamp": "2026-06-19T16:24:39.155697",
+    "tipo": "COMANDO_ESEGUITO",
+    "descrizione": "Comando 'accendi' eseguito su 'Luce cucina'",
+    "id_dispositivo": "3"
+  },
+  {
+    "id": "0c5117f6-d941-4baf-8d71-38d7f534e3b7",
+    "timestamp": "2026-06-19T16:24:39.156492",
+    "tipo": "AUTOMAZIONE_ESEGUITA",
+    "descrizione": "Automazione 'Luce cucina' eseguita su dispositivo 'Luce cucina'",
+    "id_dispositivo": null
+  },
+  {
+    "id": "f682b0b9-f4ae-4ec0-8fda-5ff8992680b3",
+    "timestamp": "2026-06-19T16:25:30.959694",
+    "tipo": "SISTEMA_TERMINATO",
+    "descrizione": "Sistema Smart Home terminato",
     "id_dispositivo": null
   }
 ]

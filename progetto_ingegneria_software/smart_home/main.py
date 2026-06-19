@@ -16,6 +16,7 @@ from smart_home.controller.controllore_log import ControlloreLog
 from smart_home.controller.controllore_sistema import ControlloreSistema
 from smart_home.controller.controllore_stanze import ControlloreStanze
 from smart_home.domain.automazione import Automazione, Regola
+from smart_home.domain.utente import Amministratore
 from smart_home.repository.json_repository import (
     RepositoryAutomazioniJSON,
     RepositoryDatiSistemaJSON,
@@ -40,7 +41,8 @@ class SmartHomeApplication:
     e fornisce un menu testuale per interagire con le funzionalit.
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
+        self._utente_corrente = None
         # ── Repository ────────────────────────────────────────
         self._repo_utenti = RepositoryUtentiJSON()
         self._repo_stanze = RepositoryStanzeJSON()
@@ -55,12 +57,12 @@ class SmartHomeApplication:
             json.dump([], f)
 
         # ── Servizi ───────────────────────────────────────────
+        self._servizio_log = ServizioLog(repository_eventi=self._repo_eventi)
         self._servizio_utenti = ServizioUtenti(repository_utenti=self._repo_utenti)
         self._servizio_stanze = ServizioStanze(
             repository_stanze=self._repo_stanze,
             servizio_log=self._servizio_log,
         )
-        self._servizio_log = ServizioLog(repository_eventi=self._repo_eventi)
         self._servizio_dispositivi = ServizioDispositivi(
             repository_dispositivi=self._repo_dispositivi,
             servizio_log=self._servizio_log,
@@ -97,7 +99,7 @@ class SmartHomeApplication:
 
     # ── Menu interattivo ──────────────────────────────────────
 
-    def avvia(self) -> None:
+    def avvia(self):
         """Avvia il menu principale del sistema."""
         print("=" * 50)
         print("  BENVENUTO NEL SISTEMA SMART HOME")
@@ -111,19 +113,23 @@ class SmartHomeApplication:
                 break
             self._esegui_scelta(scelta)
 
-    def _mostra_menu(self) -> None:
-        print("\n--- MENU PRINCIPALE ---")
-        print("1. Autenticazione")
+    def _mostra_menu(self):
+        utente_label = f" (nessun login)" if not self._utente_corrente else \
+            f" ({self._utente_corrente.nome})"
+        print(f"\n--- MENU PRINCIPALE{utente_label} ---")
+        print("1. Autenticazione / Registrazione")
         print("2. Gestione stanze (CRUD)")
         print("3. Gestione dispositivi (CRUD)")
         print("4. Controllo dispositivo")
         print("5. Gestione automazioni (CRUD)")
         print("6. Log eventi")
         print("7. Dashboard / Monitoraggio")
-        print("8. Backup / Ripristino")
+        if self._utente_corrente and isinstance(self._utente_corrente, Amministratore):
+            print("8. Backup / Ripristino")
+            print("9. Gestione utenti")
         print("0. Esci")
 
-    def _esegui_scelta(self, scelta: str) -> None:
+    def _esegui_scelta(self, scelta):
         if scelta == "1":
             self._menu_autenticazione()
         elif scelta == "2":
@@ -138,25 +144,65 @@ class SmartHomeApplication:
             self._menu_log()
         elif scelta == "7":
             self._menu_dashboard()
-        elif scelta == "8":
+        elif scelta == "8" and self._utente_corrente and isinstance(self._utente_corrente, Amministratore):
             self._menu_backup()
+        elif scelta == "9" and self._utente_corrente and isinstance(self._utente_corrente, Amministratore):
+            self._menu_gestione_utenti()
         else:
             print("Opzione non valida.")
 
     # ── Sottomenu: Autenticazione ────────────────────────────
 
-    def _menu_autenticazione(self) -> None:
+    def _menu_autenticazione(self):
+        print("\n--- AUTENTICAZIONE ---")
+        print("1. Login")
+        print("2. Registrazione nuovo account")
+        print("0. Indietro")
+        s = input("Scelta: ").strip()
+        if s == "1":
+            self._login()
+        elif s == "2":
+            self._registrazione()
+
+    def _login(self):
         email = input("Email: ").strip()
         password = input("Password: ").strip()
         utente = self._ctrl_autenticazione.effettua_login(email, password)
         if utente:
+            self._utente_corrente = utente
             print(f"Login riuscito! Benvenuto {utente.nome} (ID: {utente.id})")
         else:
             print("Credenziali non valide.")
 
+    def _registrazione(self):
+        print("\n--- REGISTRAZIONE ---")
+        nome = input("Nome: ").strip()
+        email = input("Email: ").strip()
+        password = input("Password (min 6 caratteri): ").strip()
+        conferma = input("Conferma password: ").strip()
+
+        if not nome or not email or not password:
+            print("Tutti i campi sono obbligatori.")
+            return
+        if "@" not in email or "." not in email:
+            print("Email non valida.")
+            return
+        if len(password) < 6:
+            print("La password deve avere almeno 6 caratteri.")
+            return
+        if password != conferma:
+            print("Le password non coincidono.")
+            return
+
+        utente = self._ctrl_autenticazione.registra_utente(nome, email, password)
+        if utente:
+            print(f"Account creato con successo! Puoi accedere come {email}.")
+        else:
+            print("Email già registrata.")
+
     # ── Sottomenu: Stanze (CRUD) ─────────────────────────────
 
-    def _menu_stanze(self) -> None:
+    def _menu_stanze(self):
         while True:
             print("\n--- GESTIONE STANZE ---")
             print("1. Elenca stanze")
@@ -177,7 +223,7 @@ class SmartHomeApplication:
             elif s == "0":
                 break
 
-    def _elenca_stanze(self) -> None:
+    def _elenca_stanze(self):
         stanze = self._ctrl_stanze.elenca_stanze()
         if not stanze:
             print("Nessuna stanza trovata.")
@@ -185,7 +231,7 @@ class SmartHomeApplication:
             for st in stanze:
                 print(f"  [{st.id}] {st.nome} (piano {st.piano})")
 
-    def _crea_stanza(self) -> None:
+    def _crea_stanza(self):
         nome = input("Nome stanza: ").strip()
         try:
             piano = int(input("Piano: ").strip())
@@ -195,7 +241,7 @@ class SmartHomeApplication:
         stanza = self._ctrl_stanze.crea_stanza(nome, piano)
         print(f"Stanza creata: [ID {stanza.id}] {stanza.nome}")
 
-    def _modifica_stanza(self) -> None:
+    def _modifica_stanza(self):
         self._elenca_stanze()
         try:
             id_s = int(input("ID stanza da modificare: ").strip())
@@ -218,7 +264,7 @@ class SmartHomeApplication:
         self._ctrl_stanze.aggiorna_stanza(stanza)
         print("Stanza aggiornata.")
 
-    def _elimina_stanza(self) -> None:
+    def _elimina_stanza(self):
         self._elenca_stanze()
         try:
             id_s = int(input("ID stanza da eliminare: ").strip())
@@ -232,7 +278,7 @@ class SmartHomeApplication:
 
     # ── Sottomenu: Dispositivi (CRUD) ────────────────────────
 
-    def _menu_dispositivi(self) -> None:
+    def _menu_dispositivi(self):
         while True:
             print("\n--- GESTIONE DISPOSITIVI ---")
             print("1. Elenca dispositivi")
@@ -253,7 +299,7 @@ class SmartHomeApplication:
             elif s == "0":
                 break
 
-    def _elenca_dispositivi(self) -> None:
+    def _elenca_dispositivi(self):
         dispositivi = self._ctrl_dispositivi.elenca_dispositivi()
         if not dispositivi:
             print("Nessun dispositivo trovato.")
@@ -270,7 +316,7 @@ class SmartHomeApplication:
                     info_extra = f" | {sic}"
                 print(f"  [{d.id}] {d.nome} ({d.tipo}) - {d.stato} - {online}{info_extra}")
 
-    def _crea_dispositivo(self) -> None:
+    def _crea_dispositivo(self):
         # Mostra stanze disponibili
         stanze = self._ctrl_stanze.elenca_stanze()
         if not stanze:
@@ -309,7 +355,7 @@ class SmartHomeApplication:
         dispositivo = self._ctrl_dispositivi.crea_dispositivo(nome, tipo, id_stanza, **kwargs)
         print(f"Dispositivo creato: [ID {dispositivo.id}] {dispositivo.nome} ({tipo})")
 
-    def _modifica_dispositivo(self) -> None:
+    def _modifica_dispositivo(self):
         self._elenca_dispositivi()
         try:
             id_d = int(input("ID dispositivo da modificare: ").strip())
@@ -333,7 +379,7 @@ class SmartHomeApplication:
         self._ctrl_dispositivi.aggiorna_dispositivo(disp)
         print("Dispositivo aggiornato.")
 
-    def _elimina_dispositivo(self) -> None:
+    def _elimina_dispositivo(self):
         self._elenca_dispositivi()
         try:
             id_d = int(input("ID dispositivo da eliminare: ").strip())
@@ -347,7 +393,7 @@ class SmartHomeApplication:
 
     # ── Sottomenu: Controllo dispositivo ─────────────────────
 
-    def _menu_controllo_dispositivo(self) -> None:
+    def _menu_controllo_dispositivo(self):
         self._elenca_dispositivi()
         try:
             id_d = int(input("ID dispositivo: ").strip())
@@ -383,7 +429,7 @@ class SmartHomeApplication:
 
     # ── Sottomenu: Automazioni (CRUD) ────────────────────────
 
-    def _menu_automazioni(self) -> None:
+    def _menu_automazioni(self):
         while True:
             print("\n--- GESTIONE AUTOMAZIONI ---")
             print("1. Elenca automazioni")
@@ -412,7 +458,7 @@ class SmartHomeApplication:
             elif s == "0":
                 break
 
-    def _elenca_automazioni(self) -> None:
+    def _elenca_automazioni(self):
         automazioni = self._ctrl_automazioni.elenca_regole()
         if not automazioni:
             print("Nessuna automazione trovata.")
@@ -422,7 +468,7 @@ class SmartHomeApplication:
                 regole_cnt = len(a.regole)
                 print(f"  [{a.id}] {a.nome} - {stato} (orario: {a.orario}, regole: {regole_cnt})")
 
-    def _crea_automazione(self) -> None:
+    def _crea_automazione(self):
         nome = input("Nome automazione: ").strip()
         orario = input("Orario (HH:MM, opzionale): ").strip() or None
         automazione = Automazione(id_automazione=self._prossimo_id_auto(),
@@ -443,7 +489,7 @@ class SmartHomeApplication:
         self._ctrl_automazioni.crea_regola(automazione)
         print(f"Automazione creata: [ID {automazione.id}] {automazione.nome}")
 
-    def _toggle_automazione(self) -> None:
+    def _toggle_automazione(self):
         self._elenca_automazioni()
         try:
             id_a = int(input("ID automazione: ").strip())
@@ -462,7 +508,7 @@ class SmartHomeApplication:
             print("Automazione attivata.")
         self._ctrl_automazioni.aggiorna_regola(auto)
 
-    def _elimina_automazione(self) -> None:
+    def _elimina_automazione(self):
         self._elenca_automazioni()
         try:
             id_a = int(input("ID automazione da eliminare: ").strip())
@@ -474,14 +520,12 @@ class SmartHomeApplication:
         else:
             print("Automazione non trovata.")
 
-    def _prossimo_id_auto(self) -> int:
-        """Genera un id numerico per le nuove automazioni."""
-        import random
-        return random.randint(1000, 9999)
+    def _prossimo_id_auto(self):
+        return int.from_bytes(os.urandom(2), 'big') % 9000 + 1000
 
     # ── Sottomenu: Log eventi ─────────────────────────────────
 
-    def _menu_log(self) -> None:
+    def _menu_log(self):
         filtro = input("Filtro (lascia vuoto per tutti): ").strip()
         eventi = self._ctrl_log.elenca_eventi(filtro if filtro else "")
         if not eventi:
@@ -493,7 +537,7 @@ class SmartHomeApplication:
 
     # ── Sottomenu: Dashboard / Monitoraggio ──────────────────
 
-    def _menu_dashboard(self) -> None:
+    def _menu_dashboard(self):
         print("\n--- DASHBOARD ---")
         print(self._ctrl_sistema.apri_dashboard(1))
         offline = self._ctrl_sistema.monitora_dispositivi()
@@ -504,14 +548,53 @@ class SmartHomeApplication:
         else:
             print("Tutti i dispositivi sono online.")
 
+    # ── Sottomenu: Gestione utenti (solo admin) ──────────────
+
+    def _menu_gestione_utenti(self):
+        while True:
+            print("\n--- GESTIONE UTENTI ---")
+            print("1. Elenca utenti")
+            print("2. Elimina utente")
+            print("0. Indietro")
+            s = input("Scelta: ").strip()
+            if s == "1":
+                self._elenca_utenti()
+            elif s == "2":
+                self._elimina_utente_cli()
+            elif s == "0":
+                break
+
+    def _elenca_utenti(self):
+        utenti = self._ctrl_autenticazione.elenca_utenti()
+        if not utenti:
+            print("Nessun utente trovato.")
+        else:
+            print(f"\nUtenti ({len(utenti)}):")
+            for u in utenti:
+                tipo = "Amministratore" if hasattr(u, "livello_accesso") else "Utente"
+                print(f"  [{u.id}] {u.nome} ({u.email}) - {tipo}")
+
+    def _elimina_utente_cli(self):
+        self._elenca_utenti()
+        id_u = input("ID utente da eliminare: ").strip()
+        if not id_u:
+            return
+        conferma = input(f"Eliminare l'utente {id_u}? (s/N): ").strip().lower()
+        if conferma == "s":
+            if self._ctrl_autenticazione.elimina_utente(id_u):
+                print("Utente eliminato.")
+            else:
+                print("Utente non trovato.")
+
     # ── Sottomenu: Backup / Ripristino ────────────────────────
 
-    def _menu_backup(self) -> None:
+    def _menu_backup(self):
         while True:
             print("\n--- BACKUP / RIPRISTINO ---")
             print("1. Crea backup")
             print("2. Elenca backup disponibili")
             print("3. Carica backup (ripristina)")
+            print("4. Elimina backup")
             print("0. Indietro")
             s = input("Scelta: ").strip()
 
@@ -521,10 +604,12 @@ class SmartHomeApplication:
                 self._elenca_backup()
             elif s == "3":
                 self._carica_backup()
+            elif s == "4":
+                self._elimina_backup()
             elif s == "0":
                 break
 
-    def _elenca_backup(self) -> None:
+    def _elenca_backup(self):
         backup_list = self._ctrl_sistema.elenca_backup()
         if not backup_list:
             print("Nessun backup disponibile.")
@@ -538,7 +623,7 @@ class SmartHomeApplication:
                 except OSError:
                     print(f"  {i}. {nome}")
 
-    def _carica_backup(self) -> None:
+    def _carica_backup(self):
         backup_list = self._ctrl_sistema.elenca_backup()
         if not backup_list:
             print("Nessun backup disponibile.")
@@ -554,6 +639,28 @@ class SmartHomeApplication:
                              f"I dati correnti verranno sovrascritti (s/N): ").strip().lower()
             if conferma == "s":
                 print(self._ctrl_sistema.carica_backup(percorso))
+        except ValueError:
+            print("Numero non valido.")
+
+    def _elimina_backup(self):
+        backup_list = self._ctrl_sistema.elenca_backup()
+        if not backup_list:
+            print("Nessun backup disponibile.")
+            return
+        self._elenca_backup()
+        try:
+            idx = int(input("\nNumero backup da eliminare: ").strip())
+            if idx < 1 or idx > len(backup_list):
+                print("Numero non valido.")
+                return
+            percorso = backup_list[idx - 1]
+            nome = os.path.basename(percorso)
+            conferma = input(f"Eliminare il backup '{nome}'? (s/N): ").strip().lower()
+            if conferma == "s":
+                if self._ctrl_sistema.elimina_backup(percorso):
+                    print(f"Backup '{nome}' eliminato.")
+                else:
+                    print("Errore nell'eliminazione del backup.")
         except ValueError:
             print("Numero non valido.")
 

@@ -3,14 +3,13 @@
 
   start
     :Avviare monitoraggio dispositivi;
-    :Verificare stato dispositivi;
+    :Verificare stato dispositivi (trova_offline);
   if (Anomalie presenti?) then (Si)
-    :Generare notifica;
-    :Registrare anomalia;
+    :Mostrare notifica;
   else (No)
   endif
-    :Calcolare statistiche utilizzo;
+    :Applicare filtro statistiche;
+    :Cercare eventi su repository;
     :Mostrare report;
   stop
-
 @enduml

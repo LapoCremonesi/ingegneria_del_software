@@ -5,32 +5,42 @@ actor Utente
 actor Amministratore
 
 box "Interfaccia"
-participant "VistaLogin" as VistaLogin
-participant "VistaSistema" as VistaSistema
+participant "LoginDialog" as LoginDialog
+participant "FinestraPrincipale" as FinestraPrincipale
+participant "WidgetDashboard" as WidgetDashboard
 end box
 
 box "Logica applicativa"
 participant "ControlloreAutenticazione" as ControlloreAutenticazione
 participant "ControlloreSistema" as ControlloreSistema
 participant "ServizioUtenti" as ServizioUtenti
+participant "ServizioSistema" as ServizioSistema
+participant "ServizioLog" as ServizioLog
 database "RepositoryUtenti" as RepositoryUtenti
 end box
 
-Utente -> VistaLogin : inserisciCredenziali(email, password)
-Amministratore -> VistaLogin : inserisciCredenziali(email, password)
-VistaLogin -> ControlloreAutenticazione : effettuaLogin(email, password)
+Utente -> LoginDialog : inserisci_credenziali(email, password)
+Amministratore -> LoginDialog : inserisci_credenziali(email, password)
+LoginDialog -> ControlloreAutenticazione : effettua_login(email, password)
 ControlloreAutenticazione -> ServizioUtenti : autentica(email, password)
-ServizioUtenti -> RepositoryUtenti : trovaPerEmail(email)
+ServizioUtenti -> RepositoryUtenti : trova_per_email(email)
 RepositoryUtenti --> ServizioUtenti : utente
 
 alt credenziali valide
-  ServizioUtenti --> ControlloreAutenticazione : utenteAutenticato
-  ControlloreAutenticazione -> ControlloreSistema : apriDashboard(idUtente)
-  ControlloreSistema -> ServizioSistema : caricaRiepilogo(idUtente)
-  ServizioSistema --> ControlloreSistema : datiDashboard
-  ControlloreSistema --> VistaSistema : mostraDashboard(datiDashboard)
+  ServizioUtenti --> ControlloreAutenticazione : utente_autenticato
+  LoginDialog -> ControlloreAutenticazione : login_accettato
+  ControlloreAutenticazione --> LoginDialog : utente
+
+  LoginDialog -> FinestraPrincipale : crea_finestra(id_utente, utente)
+  FinestraPrincipale -> WidgetDashboard : imposta_utente(id_utente)
+  WidgetDashboard -> ControlloreSistema : apri_dashboard(id_utente)
+  ControlloreSistema -> ServizioSistema : carica_riepilogo(id_utente)
+  ServizioSistema --> ControlloreSistema : dati_dashboard
+  ControlloreSistema --> WidgetDashboard : mostra_dashboard(dati_dashboard)
+
+  ServizioSistema -> ServizioLog : registra_evento("LOGIN_EFFETTUATO", msg)
 else credenziali non valide
-  ServizioUtenti --> ControlloreAutenticazione : erroreAutenticazione
-  ControlloreAutenticazione --> VistaLogin : mostraErroreLogin()
+  ServizioUtenti --> ControlloreAutenticazione : None
+  ControlloreAutenticazione --> LoginDialog : mostra_errore_login()
 end
 @enduml

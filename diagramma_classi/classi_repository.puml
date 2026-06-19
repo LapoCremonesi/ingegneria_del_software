@@ -2,48 +2,51 @@
 title Diagramma Classi - Repository Casa Intelligente (Persistenza JSON)
 
 interface RepositoryUtenti {
-  +trovaPerEmail(email: String): Utente
-  +salva(utente: Utente)
-  +aggiorna(utente: Utente)
+  +trova_per_email(email: str): Utente
+  +trova_tutti(): list
+  +salva(utente: Utente): void
+  +aggiorna(utente: Utente): void
+  +elimina(id_utente: str): bool
 }
 
 interface RepositoryStanze {
-  +trovaTutti(): List<Stanza>
-  +trovaPerId(id: int): Stanza
-  +salva(stanza: Stanza)
-  +aggiorna(stanza: Stanza)
-  +elimina(id: int)
+  +trova_tutti(): list
+  +trova_per_id(id_stanza: str): Stanza
+  +salva(stanza: Stanza): void
+  +aggiorna(stanza: Stanza): void
+  +elimina(id_stanza: str): bool
 }
 
 interface RepositoryDispositivi {
-  +trovaTutti(): List<Dispositivo>
-  +trovaPerId(id: int): Dispositivo
-  +salva(dispositivo: Dispositivo)
-  +aggiorna(dispositivo: Dispositivo)
-  +elimina(id: int)
-  +aggiornaStanza(idDispositivo: int, idStanza: int)
-  +trovaOffline(): List<Dispositivo>
+  +trova_tutti(): list
+  +trova_per_id(id_dispositivo: str): Dispositivo
+  +salva(dispositivo: Dispositivo): void
+  +aggiorna(dispositivo: Dispositivo): void
+  +elimina(id_dispositivo: str): bool
+  +aggiorna_stanza(id_dispositivo: str, id_stanza: str): bool
+  +trova_offline(): list
 }
 
 interface RepositoryAutomazioni {
-  +trovaTutti(): List<RegolaAutomazione>
-  +trovaPerId(id: int): RegolaAutomazione
-  +trovaAttive(): List<RegolaAutomazione>
-  +salva(regola: RegolaAutomazione)
-  +aggiorna(regola: RegolaAutomazione)
-  +elimina(id: int)
+  +trova_tutti(): list
+  +trova_per_id(id_automazione: str): Automazione
+  +trova_attive(): list
+  +salva(automazione: Automazione): void
+  +aggiorna(automazione: Automazione): void
+  +elimina(id_automazione: str): bool
 }
 
 interface RepositoryEventi {
-  +cerca(filtro: String): List<Evento>
-  +salva(evento: Evento)
-  +aggrega(filtro: String): List<Evento>
+  +cerca(filtro: str): list
+  +salva(evento: Evento): void
+  +aggrega(filtro: str): list
 }
 
 interface RepositoryDatiSistema {
-  +salvaBackup(): String
-  +elencaBackup(): List<String>
-  +caricaBackup(percorso: String): String
+  +salva_backup(): str
+  +elenca_backup(): list
+  +carica_backup(percorso: str): str
+  +elimina_backup(percorso: str): bool
 }
 
 class RepositoryUtentiJSON {
@@ -82,4 +85,5 @@ ServizioSistema --> RepositoryStanze
 ServizioSistema --> RepositoryDispositivi
 ServizioSistema --> RepositoryEventi
 ServizioSistema --> RepositoryDatiSistema
+ServizioSistema --> RepositoryAutomazioni
 @enduml

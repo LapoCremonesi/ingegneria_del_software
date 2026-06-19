@@ -2,82 +2,124 @@
 title Diagramma Classi - Dominio Casa Intelligente
 
 class Utente {
-  +id: int
-  +email: String
-  +password: String
-  +autentica(password: String): bool
+  +id: str
+  +nome: str
+  +email: str
+  +autentica(password: str): bool
+  +cambia_password(nuova_password: str): void
 }
 
 class Amministratore {
-  +livelloAccesso: int
-  +gestisciAutomazione(auto: Automazione): void
-  +consultaLog(): List<Evento>
-  +creaUtente(utente: Utente): Boolean
-  +eliminaUtente(id: int): Boolean
+  +livello_accesso: int
+  +gestisci_automazione(auto: Automazione): void
+  +consulta_log(eventi: list): list
+  +crea_utente(utente: Utente): bool
+  +elimina_utente(id_utente: str): bool
 }
 
 class Stanza {
-  +id: int
-  +nome: String
+  +id: str
+  +nome: str
   +piano: int
+  +aggiungi_dispositivo(dispositivo: Dispositivo): void
+  +rimuovi_dispositivo(id_dispositivo: str): bool
+  +elenca_dispositivi(): list
+  +get_dispositivi_per_tipo(tipo: str): list
 }
 
 class Dispositivo {
-  +id: int
-  +nome: String
-  +tipo: String
-  +stato: String
+  +id: str
+  +nome: str
+  +tipo: str
+  +stato: str
   +online: bool
-  +idStanza: int
-  +applicaComando(comando: String): bool
+  +id_stanza: str
   +accendi(): void
   +spegni(): void
+  +cambia_stato(nuovo_stato: str): bool
+  +invia_comando(comando: str): bool
+  +is_online(): bool
+  +get_stato(): str
+  +get_tipo(): str
+  +applica_comando(comando: str): bool
 }
 
 class Luce {
-  +intensita: int (0-100)
-  +colore: String
+  +intensita: int
+  +colore: str
+  +accendi(): void
+  +spegni(): void
   +attenua(valore: int): bool
-  +cambiaColore(colore: String): bool
+  +cambia_colore(colore: str): bool
 }
 
 class Termostato {
-  +temperaturaTarget: float
-  +modalita: String
-  +impostaTemperatura(temp: float): bool
-  +cambiaModalita(modalita: String): bool
+  +temperatura_target: float
+  +modalita: str
+  +imposta_temperatura(temp: float): bool
+  +cambia_modalita(modalita: str): bool
 }
 
 class Serratura {
-  +modalitaSicurezza: bool
+  +modalita_sicurezza: bool
   +blocca(): void
   +sblocca(): bool
-  +attivaSicurezza(): void
-  +disattivaSicurezza(): void
+  +attiva_sicurezza(): void
+  +disattiva_sicurezza(): void
 }
 
-class RegolaAutomazione {
-  +id: int
-  +nome: String
-  +condizione: String
-  +azione: String
+class Regola {
+  +id: str
+  +tipo_condizione: str
+  +valore_condizione: str
+  +azione: str
+  +valuta_condizione(): bool
+  +esegui_azione(): str
+}
+
+class Automazione {
+  +id: str
+  +nome: str
+  +id_dispositivo: str
   +attiva: bool
-  +orarioEsecuzione: Time
+  +orario: str
+  +ultima_esecuzione: str
+  +attiva_automazione(): void
+  +disattiva_automazione(): void
+  +aggiungi_regola(regola: Regola): void
+  +rimuovi_regola(id_regola: str): bool
+  +valuta_regole(): list
+  +deve_eseguire(): bool
+  +esegui(): bool
 }
 
 class Evento {
-  +id: int
-  +dataOra: DateTime
-  +tipoEvento: String
-  +messaggio: String
-  +idDispositivo: int
+  +id: str
+  +timestamp: DateTime
+  +tipo: str
+  +descrizione: str
+  +id_dispositivo: str
+  +to_string(): str
+  +get_timestamp(): DateTime
+  +get_tipo(): str
+}
+
+class LogEventi {
+  +id: str
+  +eventi: list
+  +aggiungi_evento(evento: Evento): void
+  +elimina_evento(id_evento: str): bool
+  +filtra_eventi(tipo: str): list
+  +get_eventi_per_data(data: str): list
+  +esporta_log(): str
 }
 
 Utente <|-- Amministratore
-Stanza "1" -- "*" Dispositivo
+Stanza "1" o-- "0..*" Dispositivo : contiene
 Dispositivo <|-- Luce
 Dispositivo <|-- Termostato
 Dispositivo <|-- Serratura
-RegolaAutomazione ..> Dispositivo : controlla
-Evento "*" --> "0..1" Dispositivo
+Automazione "1" o-- "0..*" Regola : composta da
+Automazione ..> Dispositivo : comanda
+LogEventi "1" o-- "0..*" Evento : registra
 @enduml

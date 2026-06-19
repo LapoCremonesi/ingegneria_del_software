@@ -5,8 +5,6 @@ Fornisce operazioni CRUD sui dispositivi e l'invio di comandi,
 registrando automaticamente gli eventi nel log di sistema.
 """
 
-from typing import List, Optional
-
 from smart_home.domain.dispositivo import Dispositivo
 from smart_home.repository.interfaces import RepositoryDispositivi
 
@@ -14,20 +12,20 @@ from smart_home.repository.interfaces import RepositoryDispositivi
 class ServizioDispositivi:
     """Business logic per CRUD e controllo dei dispositivi smart."""
 
-    def __init__(self, repository_dispositivi: RepositoryDispositivi,
-                 servizio_log: Optional["ServizioLog"] = None) -> None:
+    def __init__(self, repository_dispositivi,
+                 servizio_log=None):
         self._repository_dispositivi = repository_dispositivi
         self._servizio_log = servizio_log
 
     @property
-    def servizio_log(self) -> Optional["ServizioLog"]:
+    def servizio_log(self):
         return self._servizio_log
 
     @servizio_log.setter
-    def servizio_log(self, valore: "ServizioLog") -> None:
+    def servizio_log(self, valore):
         self._servizio_log = valore
 
-    def crea(self, dispositivo: Dispositivo) -> Dispositivo:
+    def crea(self, dispositivo):
         """Crea un nuovo dispositivo."""
         self._repository_dispositivi.salva(dispositivo)
         if self._servizio_log:
@@ -37,12 +35,12 @@ class ServizioDispositivi:
             )
         return dispositivo
 
-    def aggiorna(self, dispositivo: Dispositivo) -> Dispositivo:
+    def aggiorna(self, dispositivo):
         """Aggiorna un dispositivo esistente."""
         self._repository_dispositivi.aggiorna(dispositivo)
         return dispositivo
 
-    def elimina(self, id_dispositivo: str) -> bool:
+    def elimina(self, id_dispositivo):
         """Elimina un dispositivo dato il suo id."""
         dispositivo = self._repository_dispositivi.trova_per_id(id_dispositivo)
         nome = dispositivo.nome if dispositivo else id_dispositivo
@@ -54,15 +52,15 @@ class ServizioDispositivi:
             )
         return risultato
 
-    def elenca(self) -> List[Dispositivo]:
+    def elenca(self):
         """Restituisce l'elenco di tutti i dispositivi."""
         return self._repository_dispositivi.trova_tutti()
 
-    def trova_per_id(self, id_dispositivo: str) -> Optional[Dispositivo]:
+    def trova_per_id(self, id_dispositivo):
         """Restituisce un dispositivo per id."""
         return self._repository_dispositivi.trova_per_id(id_dispositivo)
 
-    def invia_comando(self, id_dispositivo: str, comando: str) -> Optional[Dispositivo]:
+    def invia_comando(self, id_dispositivo, comando):
         """
         Invia un comando a un dispositivo.
 
